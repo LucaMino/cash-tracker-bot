@@ -1,7 +1,7 @@
 import os
 import helper
-from MyOpenAI import MyOpenAI
-from GoogleSheetService import GoogleSheetService
+from services.GoogleSheetService import GoogleSheetService
+from services.OpenAIService import OpenAIService
 from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackContext
@@ -27,7 +27,7 @@ async def handle_message(update: Update, context: CallbackContext) -> None:
     await update.message.reply_text(helper.config('telegram.message.waiting_openai'))
 
     # translate to json using openai
-    openai = MyOpenAI()
+    openai = OpenAIService()
     openai_response, content = openai.get_response(message)
 
     # save response on db

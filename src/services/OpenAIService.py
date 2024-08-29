@@ -3,7 +3,7 @@ import helper
 from datetime import datetime
 from openai import OpenAI, OpenAIError
 
-class MyOpenAI:
+class OpenAIService:
 
     def __init__(self):
         self.client = OpenAI()
