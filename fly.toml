@@ -1,0 +1,4 @@
+app = 'cash-tracker-bot'
+primary_region = 'cdg'
+kill_signal = "SIGTERM"
+kill_timeout = 120

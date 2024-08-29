@@ -1,0 +1,52 @@
+{
+    "telegram": {
+        "message": {
+            "start": "Ciao! Dimmi le spese di oggi o di qualunque giorno e traccierò tutto!",
+            "waiting_openai": "Sto parlando con OpenAI...",
+            "error_openai": "Ops! Non riesco a capire bene! Prova a partire con [Oggi ho speso...]",
+            "waiting": "Sto salvando...",
+            "success": "Salvato con successo",
+            "exception": "Ops! Non riesco a salvare su google sheet!"
+        }
+    },
+
+    "openai": {
+        "model": "gpt-4o-mini",
+        "max_tokens": 250,
+        "temperature": 0.2,
+        "response_format": { "type": "json_object" }
+    },
+
+    "google_sheet": {
+        "range": {
+            "total": "A:E",
+            "from": "A",
+            "to": "E"
+        },
+        "categories": [
+            "Stipendio MS",
+            "Mancia",
+            "Betting in",
+            "Altro in",
+            "Rata famiglia",
+            "Rata auto / Assicurazione",
+            "Benzina",
+            "Trasporti",
+            "Svago",
+            "Cibo",
+            "Bar",
+            "Vestiti",
+            "Ricarica",
+            "Abbonamenti",
+            "Medicine",
+            "Regali",
+            "Betting out",
+            "Altro out"
+        ],
+        "payment_methods": [
+            "Intesa SanPaolo",
+            "Buddybank",
+            "Contanti"
+        ]
+    }
+}

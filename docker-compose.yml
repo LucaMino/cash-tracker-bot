@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  script:
+    build: .
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mariadb:10.6
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: cash-flow-tracker-bot
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+    volumes:
+      - dbdata:/var/lib/mysql
+
+volumes:
+  dbdata:
