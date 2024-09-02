@@ -10,7 +10,8 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 load_dotenv()
 
 # save conn
-# CONN = helper.connect_db()
+if helper.config('general.db.status'):
+    CONN = helper.connect_db()
 
 # retrieve telegram bot token
 TOKEN = os.getenv('TELEGRAM_TOKEN')
@@ -21,27 +22,30 @@ async def start(update: Update, context: CallbackContext) -> None:
 
 # get balance from all bank accounts
 async def get_balance(update: Update, context: CallbackContext) -> None:
-    # create new GoogleSheetService
-    g_sheet_service = GoogleSheetService('get_balance')
+    # check permission
+    if update.message.from_user.id != int(os.getenv('TELEGRAM_USER_ID')):
+        await update.message.reply_text(helper.config('telegram.message.forbidden'))
+    else:
+        # create new GoogleSheetService
+        g_sheet_service = GoogleSheetService('get_balance')
 
-    # retrieve bank accounts
-    bank_accounts = g_sheet_service.get_balance()
+        # retrieve bank accounts
+        bank_accounts = g_sheet_service.get_balance()
 
-    message_lines = []
+        message_lines = []
 
-    for index, account in enumerate(bank_accounts):
-        if account:
-            name, amount = account
-            print(name, amount)
+        for index, account in enumerate(bank_accounts):
+            if account:
+                name, amount = account
 
-            if index == len(bank_accounts) - 1:
-                message_lines.append(f"<b>{name}: {amount}</b>")
-            else:
-                message_lines.append(f"{name}: {amount}")
+                if index == len(bank_accounts) - 1:
+                    message_lines.append(f"\n<b>{name}: {amount}</b>")
+                else:
+                    message_lines.append(f"{name}: {amount}")
 
-    message = "\n".join(message_lines)
+        message = "\n".join(message_lines)
 
-    await update.message.reply_text(message, parse_mode='HTML')
+        await update.message.reply_text(message, parse_mode='HTML')
 
 # handle message function
 async def handle_message(update: Update, context: CallbackContext) -> None:
@@ -59,7 +63,8 @@ async def handle_message(update: Update, context: CallbackContext) -> None:
         openai_response, content = openai.get_response(message)
 
         # save response on db
-        # chat_id = helper.save_openai_response(CONN, openai_response)
+        if helper.config('general.db.status'):
+            chat_id = helper.save_openai_response(CONN, openai_response)
 
         if openai_response is None:
             await update.message.reply_text(helper.config('telegram.message.error_openai'))
@@ -81,7 +86,9 @@ async def handle_message(update: Update, context: CallbackContext) -> None:
                         await update.message.reply_text(transaction)
 
                         # save on db
-                        # helper.save_transaction(CONN, transaction, chat_id)
+                        if helper.config('general.db.status'):
+                            helper.save_transaction(CONN, transaction, chat_id)
+
                         # save on google sheets
                         g_sheet_service.add_transaction(transaction)
 

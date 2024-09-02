@@ -62,5 +62,11 @@
             "Buddybank",
             "Contanti"
         ]
+    },
+
+    "general": {
+        "db": {
+            "status": false
+        }
     }
 }
