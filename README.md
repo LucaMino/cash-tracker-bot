@@ -12,9 +12,9 @@ A Telegram bot integrated with OpenAI APIs for tracking and managing your cash f
    ```sh
    docker-compose up -d --build
    ```
-3. Create `.env` from `.env.example`
+3. Create `.env` from [.env.example](src/.env.example)
 
-4. Update `settings.json`
+4. Update [settings.json](src/config/settings.json)
 
 <!-- LICENSE -->
 ## License
