@@ -1,5 +1,7 @@
 import os
 import json
+import re
+import locale
 import pymysql
 import pymysql.cursors
 from datetime import datetime

@@ -6,7 +6,7 @@
             "error_openai": "Ops! Non riesco a capire bene! Prova a partire con [Oggi ho speso...]",
             "waiting": "Sto salvando...",
             "success": "Salvato con successo",
-            "exception": "Ops! Non riesco a salvare su google sheet!",
+            "exception": "Ops! Non riesco a compiere questa azione!",
             "forbidden": "Non sei autorizzato a compiere questa azione!"
         }
     },
@@ -19,10 +19,23 @@
     },
 
     "google_sheet": {
-        "range": {
-            "total": "A:E",
-            "from": "A",
-            "to": "E"
+        "functions": {
+            "add_transaction": {
+                "sheet_name": "items",
+                "range": {
+                    "total": "B:F",
+                    "from": "B",
+                    "to": "F"
+                }
+            },
+            "get_balance": {
+                "sheet_name": "dashboard",
+                "range": {
+                    "total": "B3:C7",
+                    "from": "B3",
+                    "to": "C7"
+                }
+            }
         },
         "categories": [
             "Stipendio MS",

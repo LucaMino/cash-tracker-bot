@@ -9,13 +9,16 @@ load_dotenv()
 
 class GoogleSheetService:
 
-    def __init__(self):
+    def __init__(self, func):
         # create credentials
         credentials = service_account.Credentials.from_service_account_file('src/google-key.json', scopes=['https://www.googleapis.com/auth/spreadsheets'])
         # build service
         self.service = build('sheets', 'v4', credentials=credentials)
         # set range name
-        self.range_name=f"{os.getenv('SHEET_NAME')}!{helper.config('google_sheet.range.total')}"
+        self.range_name = (
+            f"{helper.config(f'google_sheet.functions.{func}.sheet_name')}!"
+            f"{helper.config(f'google_sheet.functions.{func}.range.total')}"
+        )
 
     def read(self):
         # read sheet
@@ -37,10 +40,14 @@ class GoogleSheetService:
         # get first empty row
         first_empty_row = self.first_empty_row_index()
         # set update range
-        update_range = f"{os.getenv('SHEET_NAME')}!{helper.config('google_sheet.range.from')}{first_empty_row}:{helper.config('google_sheet.range.to')}{first_empty_row}"
+        update_range = f"{helper.config('google_sheet.functions.add_transaction.sheet_name')}!{helper.config('google_sheet.functions.add_transaction.range.from')}{first_empty_row}:{helper.config('google_sheet.functions.add_transaction.range.to')}{first_empty_row}"
         # set values
         values = [transaction['date'], transaction['payment_method'], transaction['category'], transaction['note'], transaction['amount']]
         # set body
         body = { 'values': [values] }
         # write new row
         self.write(update_range, body)
+
+    def get_balance(self):
+        rows = self.read()
+        return rows

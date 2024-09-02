@@ -19,6 +19,30 @@ TOKEN = os.getenv('TELEGRAM_TOKEN')
 async def start(update: Update, context: CallbackContext) -> None:
     await update.message.reply_text(helper.config('telegram.message.start'))
 
+# get balance from all bank accounts
+async def get_balance(update: Update, context: CallbackContext) -> None:
+    # create new GoogleSheetService
+    g_sheet_service = GoogleSheetService('get_balance')
+
+    # retrieve bank accounts
+    bank_accounts = g_sheet_service.get_balance()
+
+    message_lines = []
+
+    for index, account in enumerate(bank_accounts):
+        if account:
+            name, amount = account
+            print(name, amount)
+
+            if index == len(bank_accounts) - 1:
+                message_lines.append(f"<b>{name}: {amount}</b>")
+            else:
+                message_lines.append(f"{name}: {amount}")
+
+    message = "\n".join(message_lines)
+
+    await update.message.reply_text(message, parse_mode='HTML')
+
 # handle message function
 async def handle_message(update: Update, context: CallbackContext) -> None:
     # retrieve message
@@ -50,7 +74,7 @@ async def handle_message(update: Update, context: CallbackContext) -> None:
                     await update.message.reply_text(helper.config('telegram.message.error_openai'))
                 else:
                     # create new GoogleSheetService
-                    g_sheet_service = GoogleSheetService()
+                    g_sheet_service = GoogleSheetService('add_transaction')
 
                     # loop transactions
                     for transaction in transactions:
@@ -73,6 +97,9 @@ def main():
 
     # set start() -> /start
     application.add_handler(CommandHandler('start', start))
+
+    # set get_balance() -> /get_balance
+    application.add_handler(CommandHandler('get_balance', get_balance))
 
     # create handler for all messages (not start with /)
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
