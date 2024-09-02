@@ -6,15 +6,15 @@ A Telegram bot integrated with OpenAI APIs for tracking and managing your cash f
 ### Installation
 1. Clone the repo
    ```sh
-   git clone https://github.com/github_username/repo_name.git
+   git clone https://github.com/LucaMino/cash-tracker-bot.git
    ```
 2. Build container
    ```sh
    docker-compose up -d --build
    ```
-3. Create .env from .env.example
+3. Create `.env` from `.env.example`
 
-4. Update settings.json
+4. Update `settings.json`
 
 <!-- LICENSE -->
 ## License
