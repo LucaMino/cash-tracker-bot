@@ -3,7 +3,7 @@ import helper
 from services.GoogleSheetService import GoogleSheetService
 from services.OpenAIService import OpenAIService
 from dotenv import load_dotenv
-from telegram import Update
+from telegram import Update, BotCommand
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackContext
 
 # load .env
@@ -46,6 +46,20 @@ async def get_balance(update: Update, context: CallbackContext) -> None:
         message = "\n".join(message_lines)
 
         await update.message.reply_text(message, parse_mode='HTML')
+
+# help function
+async def help(update: Update, context: CallbackContext) -> None:
+   # retrieve bot commands
+    commands = await context.bot.get_my_commands()
+
+    message_lines = []
+
+    for command in commands:
+        message_lines.append(f"/{command.command} -> {command.description}")
+
+    message = "\n".join(message_lines)
+
+    await update.message.reply_text(f"Available commands:\n{message}")
 
 # handle message function
 async def handle_message(update: Update, context: CallbackContext) -> None:
@@ -98,15 +112,27 @@ async def handle_message(update: Update, context: CallbackContext) -> None:
                 print(e)
                 await update.message.reply_text(helper.config('telegram.message.exception'))
 
+# set suggested commands on "/" in chat
+async def post_init(application: Application) -> None:
+    command = [
+        BotCommand('start','To start something'),
+        BotCommand('get_balance','To retrieve balance of bank accounts'),
+        BotCommand('help','To get hints'),
+    ]
+    await application.bot.set_my_commands(command)
+
 def main():
     # build application
-    application = Application.builder().token(TOKEN).build()
+    application = Application.builder().token(TOKEN).post_init(post_init).build()
 
     # set start() -> /start
     application.add_handler(CommandHandler('start', start))
 
     # set get_balance() -> /get_balance
     application.add_handler(CommandHandler('get_balance', get_balance))
+
+    # set help() -> /help
+    application.add_handler(CommandHandler('help', help))
 
     # create handler for all messages (not start with /)
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
