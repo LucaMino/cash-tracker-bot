@@ -10,6 +10,8 @@ load_dotenv()
 class GoogleSheetService:
 
     def __init__(self, func):
+        # set const
+        self.FROM_API = 'FROM API'
         # create credentials
         credentials = service_account.Credentials.from_service_account_file('src/google-key.json', scopes=['https://www.googleapis.com/auth/spreadsheets'])
         # build service
@@ -42,7 +44,7 @@ class GoogleSheetService:
         # set update range
         update_range = f"{helper.config('google_sheet.functions.add_transaction.sheet_name')}!{helper.config('google_sheet.functions.add_transaction.range.from')}{first_empty_row}:{helper.config('google_sheet.functions.add_transaction.range.to')}{first_empty_row}"
         # set values
-        values = [transaction['date'], transaction['payment_method'], transaction['category'], transaction['note'], transaction['amount']]
+        values = [transaction['date'], transaction['payment_method'], transaction['category'], transaction['note'], transaction['amount'], self.FROM_API]
         # set body
         body = { 'values': [values] }
         # write new row
