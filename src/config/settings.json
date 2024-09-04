@@ -23,9 +23,9 @@
             "add_transaction": {
                 "sheet_name": "items",
                 "range": {
-                    "total": "B:F",
+                    "total": "B:G",
                     "from": "B",
-                    "to": "F"
+                    "to": "G"
                 }
             },
             "get_balance": {
