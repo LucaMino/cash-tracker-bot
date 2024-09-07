@@ -58,10 +58,10 @@ async def handle_message(update: Update, context: CallbackContext) -> None:
     # handle different state
     if bot_state == 'waiting_for_password':
         if message == os.getenv('PROTECTED_PASSWORD'):
-            # retrieve and print balance
-            await balance(update)
             # reset bot state
             bot_state = None
+            # retrieve and print balance
+            await balance(update)
         else:
             await update.message.reply_text(helper.config('telegram.message.error_password'))
     else:
