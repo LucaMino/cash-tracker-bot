@@ -1,0 +1,24 @@
+{
+    "telegram": {
+        "message": {
+            "start": {
+                "index": "Ciao! Dimmi le spese di oggi o di qualunque giorno e traccierò tutto!"
+            },
+            "waiting_openai": "Sto parlando con OpenAI...",
+            "error_openai": "Ops! Non riesco a capire bene! Prova a partire con [Oggi ho speso...]",
+            "waiting": "Sto salvando...",
+            "success": "Salvato con successo",
+            "insert_password": "Inserisci la password",
+            "error_password": "Password errata! Prova di nuovo",
+            "exception": "Ops! Non riesco a compiere questa azione!",
+            "forbidden": "Non sei autorizzato a compiere questa azione!",
+            "export": {
+                "fail": "No data found"
+            },
+            "build_sheet": {
+                "success" : "Foglio creato con successo",
+                "fail" : "Errore durante la creazione. Controlla lo spreadsheet id nell'env o il sheet_name da settings"
+            }
+        }
+    }
+}

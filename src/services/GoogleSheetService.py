@@ -54,8 +54,12 @@ class GoogleSheetService:
         self.write(update_range, body)
 
     def get_balance(self):
-        rows = self.read()
-        return rows
+        try:
+            rows = self.read()
+            return rows
+        except HttpError as err:
+            print(err)
+            return False
 
     def build_sheet(self):
         # set cells
@@ -78,6 +82,7 @@ class GoogleSheetService:
             ).execute()
             return True
         except HttpError as err:
+            print(err)
             return False
 
     def export(self):
@@ -90,4 +95,3 @@ class GoogleSheetService:
         output.seek(0)
 
         return output
-

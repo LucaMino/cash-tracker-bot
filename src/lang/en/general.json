@@ -1,0 +1,24 @@
+{
+    "telegram": {
+        "message": {
+            "start": {
+                "index": "Hi! Tell me today's expenses or any day, and I'll track everything!"
+            },
+            "waiting_openai": "Talking to OpenAI...",
+            "error_openai": "Oops! I can't quite understand! Try starting with [Today I spent...]",
+            "waiting": "Saving...",
+            "success": "Saved successfully",
+            "insert_password": "Enter the password",
+            "error_password": "Incorrect password! Please try again",
+            "exception": "Oops! I can't perform this action!",
+            "forbidden": "You are not authorized to perform this action!",
+            "export": {
+                "fail": "No data found"
+            },
+            "build_sheet": {
+                "success": "Sheet created successfully",
+                "fail": "Error creating the sheet. Check the spreadsheet id in env or the sheet_name in settings"
+            }
+        }
+    }
+}

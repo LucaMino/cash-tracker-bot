@@ -102,6 +102,7 @@
     },
 
     "general": {
+        "lang": "en",
         "db": {
             "status": false
         }

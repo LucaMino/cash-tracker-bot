@@ -106,3 +106,20 @@ def save_openai_response(conn, response):
     insert_db(conn, sql, values)
 
     return response.id
+
+def load_translations(language_code):
+    file_path = f"src/lang/{language_code}/general.json"
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"Translation file not found for language: {language_code}")
+
+    with open(file_path, 'r', encoding='utf-8') as file:
+        return json.load(file)
+
+def lang(translations, key_path):
+    keys = key_path.split('.')
+    message = translations
+    for key in keys:
+        message = message.get(key)
+        if message is None:
+            return None
+    return message

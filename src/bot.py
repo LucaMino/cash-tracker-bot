@@ -19,23 +19,24 @@ TOKEN = os.getenv('TELEGRAM_TOKEN')
 
 # set vars
 bot_state = {}
+trans = {}
 
 # start function
 async def start(update: Update, context: CallbackContext) -> None:
-    await update.message.reply_text(helper.config('telegram.message.start.index'))
+    await update.message.reply_text(helper.lang(trans, 'telegram.message.start.index'))
 
 # get balance from all bank accounts
 async def get_balance(update: Update, context: CallbackContext) -> None:
     # check permission
     if update.message.from_user.id != int(os.getenv('TELEGRAM_USER_ID')):
-        await update.message.reply_text(helper.config('telegram.message.forbidden'))
+        await update.message.reply_text(helper.lang(trans, 'telegram.message.forbidden'))
     else:
         if os.getenv('PROTECTED_PASSWORD'):
             # set bot state
             global bot_state
             bot_state = 'waiting_for_password'
 
-            await update.message.reply_text(helper.config('telegram.message.insert_password'))
+            await update.message.reply_text(helper.lang(trans, 'telegram.message.insert_password'))
         else:
             # retrieve and print balance
             await balance(update)
@@ -68,12 +69,12 @@ async def handle_message(update: Update, context: CallbackContext) -> None:
             # retrieve and print balance
             await balance(update)
         else:
-            await update.message.reply_text(helper.config('telegram.message.error_password'))
+            await update.message.reply_text(helper.lang(trans, 'telegram.message.error_password'))
     else:
-        await update.message.reply_text(helper.config('telegram.message.waiting_openai'))
+        await update.message.reply_text(helper.lang(trans, 'telegram.message.waiting_openai'))
         # check permission
         if update.message.from_user.id != int(os.getenv('TELEGRAM_USER_ID')):
-            await update.message.reply_text(helper.config('telegram.message.forbidden'))
+            await update.message.reply_text(helper.lang(trans, 'telegram.message.forbidden'))
         else:
             # translate to json using openai
             openai = OpenAIService()
@@ -84,16 +85,16 @@ async def handle_message(update: Update, context: CallbackContext) -> None:
                 chat_id = helper.save_openai_response(CONN, openai_response)
 
             if openai_response is None:
-                await update.message.reply_text(helper.config('telegram.message.error_openai'))
+                await update.message.reply_text(helper.lang(trans, 'telegram.message.error_openai'))
             else:
-                await update.message.reply_text(helper.config('telegram.message.waiting'))
+                await update.message.reply_text(helper.lang(trans, 'telegram.message.waiting'))
 
                 try:
                     # retrieve clean transactions structure
                     transactions = helper.sanitize_response(content)
 
                     if not isinstance(transactions, list) or not transactions:
-                        await update.message.reply_text(helper.config('telegram.message.error_openai'))
+                        await update.message.reply_text(helper.lang(trans, 'telegram.message.error_openai'))
                     else:
                         # create new GoogleSheetService
                         g_sheet_service = GoogleSheetService('add_transaction')
@@ -109,11 +110,11 @@ async def handle_message(update: Update, context: CallbackContext) -> None:
                             # save on google sheets
                             g_sheet_service.add_transaction(transaction)
 
-                        await update.message.reply_text(helper.config('telegram.message.success'))
+                        await update.message.reply_text(helper.lang(trans, 'telegram.message.success'))
 
                 except Exception as e:
                     print(e)
-                    await update.message.reply_text(helper.config('telegram.message.exception'))
+                    await update.message.reply_text(helper.lang(trans, 'telegram.message.exception'))
 
 # set suggested commands on "/" in chat
 async def post_init(application: Application) -> None:
@@ -134,20 +135,23 @@ async def balance(update: Update) -> None:
     # retrieve bank accounts
     bank_accounts = g_sheet_service.get_balance()
 
-    message_lines = []
+    if isinstance(bank_accounts, list):
+        message_lines = []
 
-    for index, account in enumerate(bank_accounts):
-        if account:
-            name, amount = account
+        for index, account in enumerate(bank_accounts):
+            if account:
+                name, amount = account
 
-            if index == len(bank_accounts) - 1:
-                message_lines.append(f"\n<b>{name}: {amount}</b>")
-            else:
-                message_lines.append(f"{name}: {amount}")
+                if index == len(bank_accounts) - 1:
+                    message_lines.append(f"\n<b>{name}: {amount}</b>")
+                else:
+                    message_lines.append(f"{name}: {amount}")
 
-    message = "<tg-spoiler>" + "\n".join(message_lines) + "</tg-spoiler>"
+        message = "<tg-spoiler>" + "\n".join(message_lines) + "</tg-spoiler>"
 
-    await update.message.reply_text(message, parse_mode='HTML')
+        await update.message.reply_text(message, parse_mode='HTML')
+    else:
+        await update.message.reply_text(helper.lang(trans, 'telegram.message.exception'))
 
 # build sheet structure
 async def build_sheet(update: Update, context: CallbackContext) -> None:
@@ -158,10 +162,11 @@ async def build_sheet(update: Update, context: CallbackContext) -> None:
     response = g_sheet_service.build_sheet()
 
     # set message
-    message = helper.config('telegram.message.build_sheet.success') if response else helper.config('telegram.message.build_sheet.fail')
+    message = helper.lang(trans, 'telegram.message.build_sheet.success') if response else helper.lang(trans, 'telegram.message.build_sheet.fail')
 
     await update.message.reply_text(message)
 
+# export transactions (.csv)
 async def export(update: Update, context: CallbackContext) -> None:
     # create new GoogleSheetService
     g_sheet_service = GoogleSheetService('export')
@@ -174,7 +179,7 @@ async def export(update: Update, context: CallbackContext) -> None:
         file_name = 'export-' + datetime.now().strftime('%d-%m-%Y') + '.csv'
         await context.bot.send_document(chat_id=update.message.chat_id, document=file_stream, filename=file_name)
     else:
-        await update.message.reply_text(helper.config('telegram.message.export.fail'))
+        await update.message.reply_text(helper.lang(trans, 'telegram.message.export.fail'))
 
 def main():
     # build application
@@ -197,6 +202,10 @@ def main():
 
     # create handler for all messages (not start with /)
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+
+    # load translations
+    global trans
+    trans = helper.load_translations(helper.config('general.lang'))
 
     # run bot
     application.run_polling()
