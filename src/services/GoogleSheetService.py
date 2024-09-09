@@ -1,4 +1,6 @@
 import os
+import io
+import csv
 import helper
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
@@ -77,3 +79,15 @@ class GoogleSheetService:
             return True
         except HttpError as err:
             return False
+
+    def export(self):
+        # retrieve rows
+        rows = self.read()
+        # convert to csv
+        output = io.StringIO()
+        writer = csv.writer(output)
+        writer.writerows(rows)
+        output.seek(0)
+
+        return output
+

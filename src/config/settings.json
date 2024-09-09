@@ -1,7 +1,9 @@
 {
     "telegram": {
         "message": {
-            "start": "Ciao! Dimmi le spese di oggi o di qualunque giorno e traccierò tutto!",
+            "start": {
+                "index": "Ciao! Dimmi le spese di oggi o di qualunque giorno e traccierò tutto!"
+            },
             "waiting_openai": "Sto parlando con OpenAI...",
             "error_openai": "Ops! Non riesco a capire bene! Prova a partire con [Oggi ho speso...]",
             "waiting": "Sto salvando...",
@@ -10,6 +12,9 @@
             "error_password": "Password errata! Prova di nuovo",
             "exception": "Ops! Non riesco a compiere questa azione!",
             "forbidden": "Non sei autorizzato a compiere questa azione!",
+            "export": {
+                "fail": "No data found"
+            },
             "build_sheet": {
                 "success" : "Foglio creato con successo",
                 "fail" : "Errore durante la creazione. Controlla lo spreadsheet id nell'env o il sheet_name da settings"
@@ -48,6 +53,15 @@
                     "total": "B1:G1",
                     "from": "B1",
                     "to": "G1"
+                }
+            },
+            "export": {
+                "sheet_name": "items",
+                "export_mime_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "range": {
+                    "total": "B:E",
+                    "from": "B",
+                    "to": "E"
                 }
             }
         },

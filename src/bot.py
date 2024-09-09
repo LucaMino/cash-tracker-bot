@@ -2,6 +2,7 @@ import os
 import helper
 from services.GoogleSheetService import GoogleSheetService
 from services.OpenAIService import OpenAIService
+from datetime import datetime
 from dotenv import load_dotenv
 from telegram import Update, BotCommand
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackContext
@@ -21,7 +22,7 @@ bot_state = {}
 
 # start function
 async def start(update: Update, context: CallbackContext) -> None:
-    await update.message.reply_text(helper.config('telegram.message.start'))
+    await update.message.reply_text(helper.config('telegram.message.start.index'))
 
 # get balance from all bank accounts
 async def get_balance(update: Update, context: CallbackContext) -> None:
@@ -29,11 +30,15 @@ async def get_balance(update: Update, context: CallbackContext) -> None:
     if update.message.from_user.id != int(os.getenv('TELEGRAM_USER_ID')):
         await update.message.reply_text(helper.config('telegram.message.forbidden'))
     else:
-        # set bot state
-        global bot_state
-        bot_state = 'waiting_for_password'
+        if os.getenv('PROTECTED_PASSWORD'):
+            # set bot state
+            global bot_state
+            bot_state = 'waiting_for_password'
 
-        await update.message.reply_text(helper.config('telegram.message.insert_password'))
+            await update.message.reply_text(helper.config('telegram.message.insert_password'))
+        else:
+            # retrieve and print balance
+            await balance(update)
 
 # help function
 async def help(update: Update, context: CallbackContext) -> None:
@@ -116,6 +121,7 @@ async def post_init(application: Application) -> None:
         BotCommand('start','To start something'),
         BotCommand('get_balance','To retrieve balance of bank accounts'),
         BotCommand('build_sheet','Build sheet structure'),
+        BotCommand('export','Export sheet in csv'),
         BotCommand('help','To get hints'),
     ]
     await application.bot.set_my_commands(command)
@@ -156,6 +162,20 @@ async def build_sheet(update: Update, context: CallbackContext) -> None:
 
     await update.message.reply_text(message)
 
+async def export(update: Update, context: CallbackContext) -> None:
+    # create new GoogleSheetService
+    g_sheet_service = GoogleSheetService('export')
+
+    # retrieve bank accounts
+    file_stream = g_sheet_service.export()
+
+    if file_stream:
+        # set file name
+        file_name = 'export-' + datetime.now().strftime('%d-%m-%Y') + '.csv'
+        await context.bot.send_document(chat_id=update.message.chat_id, document=file_stream, filename=file_name)
+    else:
+        await update.message.reply_text(helper.config('telegram.message.export.fail'))
+
 def main():
     # build application
     application = Application.builder().token(TOKEN).post_init(post_init).build()
@@ -171,6 +191,9 @@ def main():
 
     # set help() -> /help
     application.add_handler(CommandHandler('help', help))
+
+    # set export() -> /export
+    application.add_handler(CommandHandler('export', export))
 
     # create handler for all messages (not start with /)
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
