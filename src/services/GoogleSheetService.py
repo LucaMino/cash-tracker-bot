@@ -2,6 +2,7 @@ import os
 import helper
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 from dotenv import load_dotenv
 
 # load .env
@@ -53,3 +54,26 @@ class GoogleSheetService:
     def get_balance(self):
         rows = self.read()
         return rows
+
+    def build_sheet(self):
+        # set cells
+        update_cells = {
+            'valueInputOption': 'RAW',
+            'data': [
+                {
+                    'range': self.range_name,
+                    'values': [
+                        helper.config('google_sheet.header.items')
+                    ]
+                }
+            ]
+        }
+        # write header row
+        try:
+            self.service.spreadsheets().values().batchUpdate(
+                spreadsheetId=os.getenv('SPREADSHEET_ID'),
+                body=update_cells
+            ).execute()
+            return True
+        except HttpError as err:
+            return False

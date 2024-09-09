@@ -115,6 +115,7 @@ async def post_init(application: Application) -> None:
     command = [
         BotCommand('start','To start something'),
         BotCommand('get_balance','To retrieve balance of bank accounts'),
+        BotCommand('build_sheet','Build sheet structure'),
         BotCommand('help','To get hints'),
     ]
     await application.bot.set_my_commands(command)
@@ -142,12 +143,28 @@ async def balance(update: Update) -> None:
 
     await update.message.reply_text(message, parse_mode='HTML')
 
+# build sheet structure
+async def build_sheet(update: Update, context: CallbackContext) -> None:
+    # create new GoogleSheetService
+    g_sheet_service = GoogleSheetService('build_sheet')
+
+    # retrieve bank accounts
+    response = g_sheet_service.build_sheet()
+
+    # set message
+    message = helper.config('telegram.message.build_sheet.success') if response else helper.config('telegram.message.build_sheet.fail')
+
+    await update.message.reply_text(message)
+
 def main():
     # build application
     application = Application.builder().token(TOKEN).post_init(post_init).build()
 
     # set start() -> /start
     application.add_handler(CommandHandler('start', start))
+
+    # set build_sheet() -> /build_sheet
+    application.add_handler(CommandHandler('build_sheet', build_sheet))
 
     # set get_balance() -> /get_balance
     application.add_handler(CommandHandler('get_balance', get_balance))

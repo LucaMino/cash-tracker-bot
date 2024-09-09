@@ -9,7 +9,11 @@
             "insert_password": "Inserisci la password",
             "error_password": "Password errata! Prova di nuovo",
             "exception": "Ops! Non riesco a compiere questa azione!",
-            "forbidden": "Non sei autorizzato a compiere questa azione!"
+            "forbidden": "Non sei autorizzato a compiere questa azione!",
+            "build_sheet": {
+                "success" : "Foglio creato con successo",
+                "fail" : "Errore durante la creazione. Controlla lo spreadsheet id nell'env o il sheet_name da settings"
+            }
         }
     },
 
@@ -37,7 +41,24 @@
                     "from": "B3",
                     "to": "C7"
                 }
+            },
+            "build_sheet": {
+                "sheet_name": "items",
+                "range": {
+                    "total": "B1:G1",
+                    "from": "B1",
+                    "to": "G1"
+                }
             }
+        },
+        "header": {
+            "items": [
+                "Data",
+                "Metodo",
+                "Categoria",
+                "Note",
+                "Totale"
+            ]
         },
         "categories": [
             "Stipendio MS",

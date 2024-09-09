@@ -3,6 +3,12 @@ A Telegram bot integrated with OpenAI APIs for tracking and managing your cash f
 
 <!-- GETTING STARTED -->
 ## Getting Started
+
+### Configuration
+- Activate Google Sheet API
+- Activate OpenAI API
+- Create Telegram bot and set token on [`.env`](src/.env.example)
+
 ### Installation
 1. Clone the repo
    ```sh
@@ -15,6 +21,8 @@ A Telegram bot integrated with OpenAI APIs for tracking and managing your cash f
 3. Create `.env` from [.env.example](src/.env.example)
 
 4. Update [settings.json](src/config/settings.json)
+
+5. Create Google sheet and setup it using command `/build_sheet`
 
 <!-- LICENSE -->
 ## License
