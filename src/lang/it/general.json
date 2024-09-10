@@ -18,6 +18,10 @@
             "build_sheet": {
                 "success" : "Foglio creato con successo",
                 "fail" : "Errore durante la creazione. Controlla lo spreadsheet id nell'env o il sheet_name da settings"
+            },
+            "set_lang": {
+                "success" : "Lingua impostata con successo",
+                "fail" : "Errore durante il cambio lingua"
             }
         }
     }

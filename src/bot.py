@@ -181,6 +181,21 @@ async def export(update: Update, context: CallbackContext) -> None:
     else:
         await update.message.reply_text(helper.lang(trans, 'telegram.message.export.fail'))
 
+# export transactions (.csv)
+async def set_lang(update: Update, context: CallbackContext) -> None:
+    if context.args:
+        # retrieve lang param
+        lang = context.args[0].lower()
+        # set lang on config
+        helper.set_lang(lang)
+        # load translations
+        global trans
+        trans = helper.load_translations(helper.config('general.lang'))
+
+        await update.message.reply_text(helper.lang(trans, 'telegram.message.set_lang.success'))
+    else:
+        await update.message.reply_text(helper.lang(trans, 'telegram.message.set_lang.fail'))
+
 def main():
     # build application
     application = Application.builder().token(TOKEN).post_init(post_init).build()
@@ -199,6 +214,11 @@ def main():
 
     # set export() -> /export
     application.add_handler(CommandHandler('export', export))
+
+    # settings
+    # application.add_handler(CommandHandler('settings', settings))
+    # set settings/set_lang() -> /set_lang
+    application.add_handler(CommandHandler('set_lang', set_lang))
 
     # create handler for all messages (not start with /)
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))

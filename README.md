@@ -22,11 +22,11 @@ A Telegram bot integrated with OpenAI APIs for tracking and managing your cash f
 
 4. Update [settings.json](src/config/settings.json)
 
-5. Create Google sheet and setup it using command `/build_sheet`
+5. Create Google sheet, rename sheet_name and setup it using command `/build_sheet`
 
 <!-- USAGE -->
 ### Usage
-- Possibility to set lang on [settings.json](src/config/settings.json), available `[it, en]`
+- Possibility to set lang using `/set_lang it` or `/set_lang en` (Change default on [settings.json](src/config/settings.json))
 - Possibility to customize OpenAi prompt on [OpenAIService.py](src/services/OpenAIService.py)
 - Possibility to enable database storage on [settings.json](src/config/settings.json)
 

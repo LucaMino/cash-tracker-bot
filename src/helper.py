@@ -24,12 +24,17 @@ def sanitize_response(response_content):
 
     return [obj for obj in extracted_array if required_fields.issubset(obj.keys())]
 
-# load settings.json file
-def load_settings():
+# get file path
+def get_file_path(name = 'settings.json'):
     # absolute path
     current_dir = os.path.dirname(__file__)
     # build settings.json path
-    settings_path = os.path.join(current_dir, 'config', 'settings.json')
+    return os.path.join(current_dir, 'config', name)
+
+# load settings.json file
+def load_settings():
+    # build settings.json path
+    settings_path = get_file_path()
     # load file
     with open(settings_path, 'r') as f:
         settings = json.load(f)
@@ -123,3 +128,14 @@ def lang(translations, key_path):
         if message is None:
             return None
     return message
+
+def set_lang(lang):
+    # build settings.json path
+    settings_path = get_file_path()
+    # retrieve file content
+    data = load_settings()
+    # set new lang
+    data['general']['lang'] = lang
+    # load file
+    with open(settings_path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
