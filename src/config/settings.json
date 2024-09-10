@@ -36,9 +36,9 @@
                 "sheet_name": "items",
                 "export_mime_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 "range": {
-                    "total": "B:E",
+                    "total": "B:F",
                     "from": "B",
-                    "to": "E"
+                    "to": "F"
                 }
             }
         },
