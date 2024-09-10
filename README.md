@@ -24,7 +24,13 @@ A Telegram bot integrated with OpenAI APIs for tracking and managing your cash f
 
 5. Create Google sheet and setup it using command `/build_sheet`
 
+<!-- USAGE -->
+### Usage
+- Possibility to set lang on [settings.json](src/config/settings.json), available `[it, en]`
+- Possibility to customize OpenAi prompt on [OpenAIService.py](src/services/OpenAIService.py)
+- Possibility to enable database storage on [settings.json](src/config/settings.json)
+
 <!-- LICENSE -->
-## License
+### License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
