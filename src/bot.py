@@ -123,6 +123,7 @@ async def post_init(application: Application) -> None:
         BotCommand('get_balance','To retrieve balance of bank accounts'),
         BotCommand('build_sheet','Build sheet structure'),
         BotCommand('export','Export sheet in csv'),
+        BotCommand('set_lang','Set default lang [it, en]'),
         BotCommand('help','To get hints'),
     ]
     await application.bot.set_my_commands(command)
@@ -215,8 +216,6 @@ def main():
     # set export() -> /export
     application.add_handler(CommandHandler('export', export))
 
-    # settings
-    # application.add_handler(CommandHandler('settings', settings))
     # set settings/set_lang() -> /set_lang
     application.add_handler(CommandHandler('set_lang', set_lang))
 
