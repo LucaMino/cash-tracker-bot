@@ -21,7 +21,7 @@
             },
             "set_lang": {
                 "success": "Language set successfully",
-                "fail": "Error during language change"
+                "fail": "Error during language change. Use /set_lang {language}"
             }
         }
     }
