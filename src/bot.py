@@ -17,6 +17,9 @@ if helper.config('general.db.status'):
 # retrieve telegram bot token
 TOKEN = os.getenv('TELEGRAM_TOKEN')
 
+# set consts
+WAITING_PWD = 'waiting_for_password'
+EXPORT_METHOD = 'generate_export'
 # set vars
 bot_state = {}
 trans = {}
@@ -28,18 +31,19 @@ async def start(update: Update, context: CallbackContext) -> None:
 # get balance from all bank accounts
 async def get_balance(update: Update, context: CallbackContext) -> None:
     # check permission
-    if update.message.from_user.id != int(os.getenv('TELEGRAM_USER_ID')):
+    if not helper.user_access(update.message.from_user.id, os.getenv('TELEGRAM_USER_ID')):
         await update.message.reply_text(helper.lang(trans, 'telegram.message.forbidden'))
-    else:
-        if os.getenv('PROTECTED_PASSWORD'):
-            # set bot state
-            global bot_state
-            bot_state = 'waiting_for_password'
+        return
 
-            await update.message.reply_text(helper.lang(trans, 'telegram.message.insert_password'))
-        else:
-            # retrieve and print balance
-            await balance(update)
+    if os.getenv('PROTECTED_PASSWORD'):
+        # set bot state
+        global bot_state
+        bot_state = 'waiting_for_password'
+
+        await update.message.reply_text(helper.lang(trans, 'telegram.message.insert_password'))
+    else:
+        # retrieve and print balance
+        await balance(update)
 
 # help function
 async def help(update: Update, context: CallbackContext) -> None:
@@ -57,12 +61,16 @@ async def help(update: Update, context: CallbackContext) -> None:
 
 # handle message function
 async def handle_message(update: Update, context: CallbackContext) -> None:
+    # check permission
+    if not helper.user_access(update.message.from_user.id, os.getenv('TELEGRAM_USER_ID')):
+        await update.message.reply_text(helper.lang(trans, 'telegram.message.forbidden'))
+        return
     # retrieve message
     message = update.message.text
+    # use global vars
     global bot_state
-
     # handle different state
-    if bot_state == 'waiting_for_password':
+    if bot_state == WAITING_PWD:
         if message == os.getenv('PROTECTED_PASSWORD'):
             # reset bot state
             bot_state = None
@@ -72,14 +80,19 @@ async def handle_message(update: Update, context: CallbackContext) -> None:
             await update.message.reply_text(helper.lang(trans, 'telegram.message.error_password'))
     else:
         await update.message.reply_text(helper.lang(trans, 'telegram.message.waiting_openai'))
-        # check permission
-        if update.message.from_user.id != int(os.getenv('TELEGRAM_USER_ID')):
-            await update.message.reply_text(helper.lang(trans, 'telegram.message.forbidden'))
-        else:
-            # translate to json using openai
-            openai = OpenAIService()
-            openai_response, content = openai.get_response(message)
+        # create openai service
+        openai = OpenAIService()
+        # retrieve method
+        method_name = openai.get_method(message)
+        method = getattr(openai, method_name)
+        # perform method
+        openai_response, content = method(message)
 
+        if method_name == EXPORT_METHOD:
+            # set file name
+            file_name = 'ai-export-' + datetime.now().strftime('%d-%m-%Y') + '.csv'
+            await context.bot.send_document(chat_id=update.message.chat_id, document=content, filename=file_name)
+        else:
             # save response on db
             if helper.config('general.db.status'):
                 chat_id = helper.save_openai_response(CONN, openai_response)

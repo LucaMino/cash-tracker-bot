@@ -85,6 +85,16 @@ class GoogleSheetService:
             print(err)
             return False
 
+    def convert_sheet_csv(self):
+        # retrieve rows
+        rows = self.read()
+        # convert to csv
+        output = io.StringIO()
+        writer = csv.writer(output)
+        writer.writerows(rows)
+
+        return output
+
     def export(self):
         # retrieve rows
         rows = self.read()

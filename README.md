@@ -1,5 +1,6 @@
 # cash-tracker-bot
-A Telegram bot integrated with OpenAI APIs for tracking and managing your cash flow. Automatically logs financial data and transactions into a Google Sheet, making budgeting and expense tracking seamless and efficient.
+A Telegram bot for tracking and managing cash flow.
+It automatically logs financial data and transactions into a Google Sheet and generates custom exports using OpenAI APIs.
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -20,7 +21,7 @@ A Telegram bot integrated with OpenAI APIs for tracking and managing your cash f
    ```
 3. Create `.env` from [.env.example](src/.env.example)
 
-4. Update [settings.json](src/config/settings.json)
+4. Update [settings.json](src/config/settings.json) (Change categories, payment methods...)
 
 5. Create Google sheet, rename sheet_name and setup it using command `/build_sheet`
 

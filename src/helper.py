@@ -1,14 +1,11 @@
 import os
 import json
-import re
-import locale
+import io
 import pymysql
 import pymysql.cursors
 from datetime import datetime
 
-def sanitize_response(response_content):
-    # json decode
-    decoded_content = json.loads(response_content)
+def sanitize_response(decoded_content):
     extracted_array = None
     # remove key "transactions" and return only list
     if isinstance(decoded_content, dict):
@@ -139,3 +136,15 @@ def set_lang(lang):
     # load file
     with open(settings_path, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
+
+def user_access(user_id, telegram_user_id):
+    return user_id == int(telegram_user_id)
+
+def create_file_stream(csv_string):
+    file_stream = io.BytesIO()
+
+    file_stream.write(csv_string.encode('utf-8'))
+
+    file_stream.seek(0)
+
+    return file_stream
