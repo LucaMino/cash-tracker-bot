@@ -38,7 +38,7 @@ async def get_balance(update: Update, context: CallbackContext) -> None:
     if os.getenv('PROTECTED_PASSWORD'):
         # set bot state
         global bot_state
-        bot_state = 'waiting_for_password'
+        bot_state = WAITING_PWD
 
         await update.message.reply_text(helper.lang(trans, 'telegram.message.insert_password'))
     else:
