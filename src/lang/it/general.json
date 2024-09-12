@@ -8,8 +8,6 @@
             "error_openai": "Ops! Non riesco a capire bene! Prova a partire con [Oggi ho speso...]",
             "waiting": "Sto salvando...",
             "success": "Salvato con successo",
-            "insert_password": "Inserisci la password",
-            "error_password": "Password errata! Prova di nuovo",
             "exception": "Ops! Non riesco a compiere questa azione!",
             "forbidden": "Non sei autorizzato a compiere questa azione!",
             "export": {

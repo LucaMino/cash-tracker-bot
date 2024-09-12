@@ -21,13 +21,17 @@ class OpenAIService:
         # set system prompt
         g_sheet_service = GoogleSheetService('export')
         # retrieve csv file content
-        csv_content = g_sheet_service.convert_sheet_csv().getvalue()
+        csv_content = g_sheet_service.convert_sheet_csv()# .getvalue()
+
+        # print(csv_content)
+
         # set system prompt
-        system_prompt = f'Data il csv: {csv_content}, converti i dati in formato CSV con la prima riga come header. Ogni riga successiva dovrebbe contenere i valori separati da virgole. Ritorna un json con key: "data" per il CSV (stringa) FILTRATA COME DA INDICAZIONE'
+        system_prompt = f'Data il csv in formato array: {csv_content}. Filtralo come da prompt dell\'utente e ritorna un json con key: "data" per il risultato finale (dovrà essere una stringa formato csv). Non saltare righe. Il primo array con Data, Metodo... consideralo header. Il numero delle colonne per ogni riga è 5. Per andare a capo fai /n e ogni cella separala da ;'
+
         # retrieve gpt response
         response, content = self.get_response(message, system_prompt)
 
-        print(content['data'])
+        # print(content['data'])
 
         # create csv file
         file_stream = helper.create_file_stream(content['data'])

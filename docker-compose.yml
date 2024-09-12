@@ -13,11 +13,15 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_USER: root
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: cash-flow-tracker-bot
-      MYSQL_USER: root
-      MYSQL_PASSWORD: password
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+
+      # MYSQL_ROOT_USER: root
+      # MYSQL_ROOT_PASSWORD: password
+      # MYSQL_DATABASE: cash-flow-tracker-bot
+      # MYSQL_USER: root
+      # MYSQL_PASSWORD: password
     volumes:
       - dbdata:/var/lib/mysql
 

@@ -8,8 +8,6 @@
             "error_openai": "Oops! I can't quite understand! Try starting with [Today I spent...]",
             "waiting": "Saving...",
             "success": "Saved successfully",
-            "insert_password": "Enter the password",
-            "error_password": "Incorrect password! Please try again",
             "exception": "Oops! I can't perform this action!",
             "forbidden": "You are not authorized to perform this action!",
             "export": {

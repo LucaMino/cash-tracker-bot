@@ -18,10 +18,8 @@ if helper.config('general.db.status'):
 TOKEN = os.getenv('TELEGRAM_TOKEN')
 
 # set consts
-WAITING_PWD = 'waiting_for_password'
 EXPORT_METHOD = 'generate_export'
 # set vars
-bot_state = {}
 trans = {}
 
 # start function
@@ -34,16 +32,8 @@ async def get_balance(update: Update, context: CallbackContext) -> None:
     if not helper.user_access(update.message.from_user.id, os.getenv('TELEGRAM_USER_ID')):
         await update.message.reply_text(helper.lang(trans, 'telegram.message.forbidden'))
         return
-
-    if os.getenv('PROTECTED_PASSWORD'):
-        # set bot state
-        global bot_state
-        bot_state = WAITING_PWD
-
-        await update.message.reply_text(helper.lang(trans, 'telegram.message.insert_password'))
-    else:
-        # retrieve and print balance
-        await balance(update)
+    # retrieve and print balance
+    await balance(update)
 
 # help function
 async def help(update: Update, context: CallbackContext) -> None:
@@ -68,66 +58,55 @@ async def handle_message(update: Update, context: CallbackContext) -> None:
     # retrieve message
     message = update.message.text
     # use global vars
-    global bot_state
-    # handle different state
-    if bot_state == WAITING_PWD:
-        if message == os.getenv('PROTECTED_PASSWORD'):
-            # reset bot state
-            bot_state = None
-            # retrieve and print balance
-            await balance(update)
-        else:
-            await update.message.reply_text(helper.lang(trans, 'telegram.message.error_password'))
+    await update.message.reply_text(helper.lang(trans, 'telegram.message.waiting_openai'))
+    # create openai service
+    openai = OpenAIService()
+    # retrieve method
+    method_name = openai.get_method(message)
+    method = getattr(openai, method_name)
+    # perform method
+    openai_response, content = method(message)
+
+    if method_name == EXPORT_METHOD:
+        # set file name
+        file_name = 'ai-export-' + datetime.now().strftime('%d-%m-%Y') + '.xlsx'
+        await context.bot.send_document(chat_id=update.message.chat_id, document=content, filename=file_name)
     else:
-        await update.message.reply_text(helper.lang(trans, 'telegram.message.waiting_openai'))
-        # create openai service
-        openai = OpenAIService()
-        # retrieve method
-        method_name = openai.get_method(message)
-        method = getattr(openai, method_name)
-        # perform method
-        openai_response, content = method(message)
+        # save response on db
+        if helper.config('general.db.status'):
+            chat_id = helper.save_openai_response(CONN, openai_response)
 
-        if method_name == EXPORT_METHOD:
-            # set file name
-            file_name = 'ai-export-' + datetime.now().strftime('%d-%m-%Y') + '.csv'
-            await context.bot.send_document(chat_id=update.message.chat_id, document=content, filename=file_name)
+        if openai_response is None:
+            await update.message.reply_text(helper.lang(trans, 'telegram.message.error_openai'))
         else:
-            # save response on db
-            if helper.config('general.db.status'):
-                chat_id = helper.save_openai_response(CONN, openai_response)
+            await update.message.reply_text(helper.lang(trans, 'telegram.message.waiting'))
 
-            if openai_response is None:
-                await update.message.reply_text(helper.lang(trans, 'telegram.message.error_openai'))
-            else:
-                await update.message.reply_text(helper.lang(trans, 'telegram.message.waiting'))
+            try:
+                # retrieve clean transactions structure
+                transactions = helper.sanitize_response(content)
 
-                try:
-                    # retrieve clean transactions structure
-                    transactions = helper.sanitize_response(content)
+                if not isinstance(transactions, list) or not transactions:
+                    await update.message.reply_text(helper.lang(trans, 'telegram.message.error_openai'))
+                else:
+                    # create new GoogleSheetService
+                    g_sheet_service = GoogleSheetService('add_transaction')
 
-                    if not isinstance(transactions, list) or not transactions:
-                        await update.message.reply_text(helper.lang(trans, 'telegram.message.error_openai'))
-                    else:
-                        # create new GoogleSheetService
-                        g_sheet_service = GoogleSheetService('add_transaction')
+                    # loop transactions
+                    for transaction in transactions:
+                        await update.message.reply_text(transaction)
 
-                        # loop transactions
-                        for transaction in transactions:
-                            await update.message.reply_text(transaction)
+                        # save on db
+                        if helper.config('general.db.status'):
+                            helper.save_transaction(CONN, transaction, chat_id)
 
-                            # save on db
-                            if helper.config('general.db.status'):
-                                helper.save_transaction(CONN, transaction, chat_id)
+                        # save on google sheets
+                        g_sheet_service.add_transaction(transaction)
 
-                            # save on google sheets
-                            g_sheet_service.add_transaction(transaction)
+                    await update.message.reply_text(helper.lang(trans, 'telegram.message.success'))
 
-                        await update.message.reply_text(helper.lang(trans, 'telegram.message.success'))
-
-                except Exception as e:
-                    print(e)
-                    await update.message.reply_text(helper.lang(trans, 'telegram.message.exception'))
+            except Exception as e:
+                print(e)
+                await update.message.reply_text(helper.lang(trans, 'telegram.message.exception'))
 
 # set suggested commands on "/" in chat
 async def post_init(application: Application) -> None:

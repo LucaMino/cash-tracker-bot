@@ -1,6 +1,8 @@
 import os
 import json
 import io
+import pandas as pd
+import xlsxwriter
 import pymysql
 import pymysql.cursors
 from datetime import datetime
@@ -140,11 +142,16 @@ def set_lang(lang):
 def user_access(user_id, telegram_user_id):
     return user_id == int(telegram_user_id)
 
-def create_file_stream(csv_string):
-    file_stream = io.BytesIO()
+def create_file_stream(data_string):
+    data_io = io.StringIO(data_string)
 
-    file_stream.write(csv_string.encode('utf-8'))
+    df = pd.read_csv(data_io, delimiter=';', skipinitialspace=True)
 
-    file_stream.seek(0)
+    output = io.BytesIO()
 
-    return file_stream
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        df.to_excel(writer, index=False)
+
+    output.seek(0)
+
+    return output
