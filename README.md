@@ -4,7 +4,7 @@ It automatically logs financial data and transactions into a Google Sheet and ge
 
 ## Examples
 - Log Expenses: You can tell the bot things like "Today I spent 5,00 € at the bar and 2,00 € for the bus ticket," and it will record these transactions on Google Sheet for you.
-- Generate Reports: You can request reports with commands like "Give me an export of all expenses for September by category," and the bot will generate the requested data.
+- Generate Reports: You can request reports with commands like "Give me an export of all expenses for September by {category}" and the bot will generate the requested data.
 
 <!-- GETTING STARTED -->
 ## Getting Started
