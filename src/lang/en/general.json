@@ -2,9 +2,9 @@
     "telegram": {
         "message": {
             "start": {
-                "index": "Hi! Tell me today's expenses or any day, and I'll track everything!"
+                "index": "Hi! Tell me the expenses for today or any other day, and I'll track everything for you! Additionally, I can provide you with customized exports of the recorded transactions"
             },
-            "waiting_openai": "Talking to OpenAI...",
+            "waiting_openai": "Waiting for OpenAI...",
             "error_openai": "Oops! I can't quite understand! Try starting with [Today I spent...]",
             "waiting": "Saving...",
             "success": "Saved successfully",

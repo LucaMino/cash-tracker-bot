@@ -23,15 +23,11 @@ class OpenAIService:
         # retrieve csv file content
         csv_content = g_sheet_service.convert_sheet_csv()# .getvalue()
 
-        # print(csv_content)
-
         # set system prompt
-        system_prompt = f'Data il csv in formato array: {csv_content}. Filtralo come da prompt dell\'utente e ritorna un json con key: "data" per il risultato finale (dovrà essere una stringa formato csv). Non saltare righe. Il primo array con Data, Metodo... consideralo header. Il numero delle colonne per ogni riga è 5. Per andare a capo fai /n e ogni cella separala da ;'
+        system_prompt = f'Given the CSV in array format: {csv_content}. Filter it based on the user\'s prompt and return a JSON with the key: "data" for the final result (which should be a string in CSV format). Do not skip any rows. Consider the first array with Data, Metodo... as the header. The number of columns per row is 5. Use /n for line breaks and separate each cell with a semicolon (;).'
 
         # retrieve gpt response
         response, content = self.get_response(message, system_prompt)
-
-        # print(content['data'])
 
         # create csv file
         file_stream = helper.create_file_stream(content['data'])
@@ -45,7 +41,8 @@ class OpenAIService:
         categories = helper.config('google_sheet.categories')
         payment_methods = helper.config('google_sheet.payment_methods')
         # set system prompt
-        system_prompt = f'Dato l\'input ritorna un json (anche vuoto, NON INVENTARE) con le transazioni, ognuna con: date(dd/mm/yyyy, oggi: {date}), payment_method (one, [{payment_methods}], default: "Contanti"), category (one, [{categories}]), amount(se spesa in negativo), note (max 10 caratteri, not null or set "-")'
+        system_prompt = f'Given the input, return a JSON (can be empty, DO NOT INVENT) with the transactions, each containing: date (dd/mm/yyyy, today: {date}), payment_method (one of [{payment_methods}], default: "Cash"), category (one of [{categories}]), amount (if expense, negative), note (max 10 characters, not null or set to "-").'
+
         # retrieve gpt response
         response, content = self.get_response(message, system_prompt)
 

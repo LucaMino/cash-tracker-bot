@@ -72,6 +72,7 @@ def connect_db():
     )
     return conn
 
+# insert db row
 def insert_db(conn, sql, values):
     try:
         with conn.cursor() as cursor:
@@ -80,6 +81,7 @@ def insert_db(conn, sql, values):
     except Exception as e:
         print(f"Error: {e}")
 
+# save transaction
 def save_transaction(conn, transaction, chat_id):
     # create sql script
     sql = "INSERT INTO transactions (category, amount, payment_method, note, paid_at, openai_response_chat_id) VALUES (%s, %s, %s, %s, %s, %s)"
@@ -95,6 +97,7 @@ def save_transaction(conn, transaction, chat_id):
     # save
     insert_db(conn, sql, values)
 
+# save openai response
 def save_openai_response(conn, response):
     # create sql script
     sql = "INSERT INTO openai_responses (chat_id, response, completion_tokens, prompt_tokens, total_tokens) VALUES (%s, %s, %s, %s, %s)"
@@ -111,6 +114,7 @@ def save_openai_response(conn, response):
 
     return response.id
 
+# load translations
 def load_translations(language_code):
     file_path = f"src/lang/{language_code}/general.json"
     if not os.path.exists(file_path):
@@ -142,6 +146,7 @@ def set_lang(lang):
 def user_access(user_id, telegram_user_id):
     return user_id == int(telegram_user_id)
 
+# create file stream
 def create_file_stream(data_string):
     data_io = io.StringIO(data_string)
 

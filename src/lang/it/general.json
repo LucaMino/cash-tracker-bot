@@ -2,9 +2,9 @@
     "telegram": {
         "message": {
             "start": {
-                "index": "Ciao! Dimmi le spese di oggi o di qualunque giorno e traccierò tutto!"
+                "index": "Ciao! Dimmi le spese di oggi o di qualunque giorno e traccierò tutto! Inoltre posso fornirti export personalizzati sulle transazioni segnate"
             },
-            "waiting_openai": "Sto parlando con OpenAI...",
+            "waiting_openai": "In attesa di OpenAI...",
             "error_openai": "Ops! Non riesco a capire bene! Prova a partire con [Oggi ho speso...]",
             "waiting": "Sto salvando...",
             "success": "Salvato con successo",

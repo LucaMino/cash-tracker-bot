@@ -111,7 +111,7 @@ async def handle_message(update: Update, context: CallbackContext) -> None:
 # set suggested commands on "/" in chat
 async def post_init(application: Application) -> None:
     command = [
-        BotCommand('start','To start something'),
+        BotCommand('start','To start bot'),
         BotCommand('get_balance','To retrieve balance of bank accounts'),
         BotCommand('build_sheet','Build sheet structure'),
         BotCommand('export','Export sheet in csv'),
