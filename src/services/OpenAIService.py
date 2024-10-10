@@ -41,7 +41,7 @@ class OpenAIService:
         categories = helper.config('google_sheet.categories')
         payment_methods = helper.config('google_sheet.payment_methods')
         # set system prompt
-        system_prompt = f'Given the input, return a JSON (can be empty, DO NOT INVENT) with the transactions, each containing: date (dd/mm/yyyy, today: {date}), payment_method (one of [{payment_methods}], default: "Cash"), category (one of [{categories}]), amount (if expense, negative), note (max 10 characters, not null or set to "-").'
+        system_prompt = f'Given the input, return a JSON (can be empty, DO NOT INVENT) with the transactions, each containing: date (dd/mm/yyyy, today: {date}), payment_method (one of [{payment_methods}], default: "Contanti"), category (one of [{categories}]), amount (if expense, negative), note (max 10 characters, not null or set to "-").'
 
         # retrieve gpt response
         response, content = self.get_response(message, system_prompt)
