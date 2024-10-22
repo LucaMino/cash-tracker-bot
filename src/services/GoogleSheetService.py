@@ -47,7 +47,7 @@ class GoogleSheetService:
         # set update range
         update_range = f"{helper.config('google_sheet.functions.add_transaction.sheet_name')}!{helper.config('google_sheet.functions.add_transaction.range.from')}{first_empty_row}:{helper.config('google_sheet.functions.add_transaction.range.to')}{first_empty_row}"
         # set values
-        values = [transaction['date'], transaction['payment_method'], transaction['category'], transaction['note'], transaction['amount'], self.FROM_API]
+        values = [transaction['date'].replace("'", ''), transaction['payment_method'], transaction['category'], transaction['note'], transaction['amount'], self.FROM_API]
         # set body
         body = { 'values': [values] }
         # write new row
