@@ -15,7 +15,7 @@
             },
             "build_sheet": {
                 "success": "Sheet created successfully",
-                "fail": "Error creating the sheet. Check the spreadsheet id in env or the sheet_name in settings"
+                "fail": "Error creating the sheet. Check the SPREADSHEET_ID in env or the sheet_name in settings"
             },
             "set_lang": {
                 "success": "Language set successfully",
