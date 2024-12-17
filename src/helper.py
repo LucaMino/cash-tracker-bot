@@ -1,11 +1,12 @@
+import re
 import os
 import json
 import io
 import pandas as pd
 import xlsxwriter
+from datetime import datetime
 import pymysql
 import pymysql.cursors
-from datetime import datetime
 
 def sanitize_response(decoded_content):
     extracted_array = None
@@ -160,3 +161,6 @@ def create_file_stream(data_string):
     output.seek(0)
 
     return output
+
+def format_date(date):
+    return re.sub(r'[^0-9/]', '', date)

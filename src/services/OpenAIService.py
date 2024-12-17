@@ -21,7 +21,7 @@ class OpenAIService:
         # set system prompt
         g_sheet_service = GoogleSheetService('export')
         # retrieve csv file content
-        csv_content = g_sheet_service.convert_sheet_csv()# .getvalue()
+        csv_content = g_sheet_service.convert_sheet_csv()
 
         # set system prompt
         system_prompt = f'Given the CSV in array format: {csv_content}. Filter it based on the user\'s prompt and return a JSON with the key: "data" for the final result (which should be a string in CSV format). Do not skip any rows. Consider the first array with Data, Metodo... as the header. The number of columns per row is 5. Use /n for line breaks and separate each cell with a semicolon (;).'
@@ -37,9 +37,19 @@ class OpenAIService:
     def generate_trans(self, message):
         # set current date
         date = datetime.today().strftime('%d/%m/%Y')
-        # set vars
-        categories = helper.config('google_sheet.categories')
-        payment_methods = helper.config('google_sheet.payment_methods')
+        # retrieve payment_methods and categories from google sheets
+        if(helper.config('google_sheet.use_gs.categories')):
+            g_sheet_service = GoogleSheetService('get_payment_methods')
+            payment_methods = g_sheet_service.get_payment_methods()
+        else:
+            payment_methods = helper.config('google_sheet.payment_methods')
+
+        if(helper.config('google_sheet.use_gs.categories')):
+            g_sheet_service = GoogleSheetService('get_categories')
+            categories = g_sheet_service.get_categories()
+        else:
+            categories = helper.config('google_sheet.categories')
+
         # set system prompt
         system_prompt = f'Given the input, return a JSON (can be empty, DO NOT INVENT) with the transactions, each containing: date (dd/mm/yyyy, today: {date}), payment_method (one of [{payment_methods}], default: "Contanti"), category (one of [{categories}]), amount (if expense, negative), note (max 10 characters, not null or set to "-").'
 
@@ -69,8 +79,6 @@ class OpenAIService:
                 temperature=helper.config('openai.temperature'),
                 response_format=helper.config('openai.response_format'),
             )
-            # print(response)
-
             # return message content response
             return response, json.loads(response.choices[0].message.content)
 

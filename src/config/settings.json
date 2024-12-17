@@ -24,6 +24,22 @@
                     "to": "C7"
                 }
             },
+            "get_payment_methods": {
+                "sheet_name": "utils",
+                "range": {
+                    "total": "C2:C4",
+                    "from": "C2",
+                    "to": "C4"
+                }
+            },
+            "get_categories": {
+                "sheet_name": "utils",
+                "range": {
+                    "total": "A2:A21",
+                    "from": "A2",
+                    "to": "A21"
+                }
+            },
             "build_sheet": {
                 "sheet_name": "items",
                 "range": {
@@ -75,7 +91,11 @@
             "Intesa San Paolo",
             "Buddybank",
             "Contanti"
-        ]
+        ],
+        "use_gs": {
+            "categories": false,
+            "payment_methods": false
+        }
     },
 
     "general": {

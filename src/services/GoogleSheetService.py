@@ -46,8 +46,10 @@ class GoogleSheetService:
         first_empty_row = self.first_empty_row_index()
         # set update range
         update_range = f"{helper.config('google_sheet.functions.add_transaction.sheet_name')}!{helper.config('google_sheet.functions.add_transaction.range.from')}{first_empty_row}:{helper.config('google_sheet.functions.add_transaction.range.to')}{first_empty_row}"
+        # sanitize date
+        transaction['date'] = helper.format_date(transaction['date'])
         # set values
-        values = [transaction['date'].replace("'", ''), transaction['payment_method'], transaction['category'], transaction['note'], transaction['amount'], self.FROM_API]
+        values = [transaction['date'], transaction['payment_method'], transaction['category'], transaction['note'], transaction['amount'], self.FROM_API]
         # set body
         body = { 'values': [values] }
         # write new row
@@ -57,6 +59,24 @@ class GoogleSheetService:
         try:
             rows = self.read()
             return rows
+        except HttpError as err:
+            print(err)
+            return False
+
+    def get_categories(self):
+        try:
+            rows = self.read()
+            clean_rows = [item for subrow in rows for item in subrow]
+            return clean_rows
+        except HttpError as err:
+            print(err)
+            return False
+
+    def get_payment_methods(self):
+        try:
+            rows = self.read()
+            clean_rows = [item for subrow in rows for item in subrow]
+            return clean_rows
         except HttpError as err:
             print(err)
             return False
