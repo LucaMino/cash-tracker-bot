@@ -101,7 +101,7 @@
     "general": {
         "lang": "it",
         "db": {
-            "status": false
+            "status": true
         }
     }
 }

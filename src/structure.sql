@@ -1,4 +1,4 @@
-SET time_zone = 'Europe/Rome';
+SET TIME ZONE 'Europe/Rome';
 
 CREATE TABLE openai_responses (
     chat_id VARCHAR(255) PRIMARY KEY,
@@ -10,7 +10,7 @@ CREATE TABLE openai_responses (
 );
 
 CREATE TABLE transactions (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     category VARCHAR(255) NOT NULL,
     amount DECIMAL(10, 2) NOT NULL,
     currency VARCHAR(3) DEFAULT 'EUR',
@@ -19,7 +19,8 @@ CREATE TABLE transactions (
     paid_at DATE NULL,
     openai_response_chat_id VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_openai_response_chat_id (openai_response_chat_id),
     CONSTRAINT fk_openai_response_chat_id
     FOREIGN KEY (openai_response_chat_id) REFERENCES openai_responses(chat_id)
 );
+
+CREATE INDEX idx_openai_response_chat_id ON transactions (openai_response_chat_id);
