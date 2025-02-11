@@ -27,6 +27,7 @@ It automatically logs financial data and transactions into a Google Sheet and ge
 
 4. Update [settings.json](src/config/settings.json) (Change categories, payment methods...)
 
+
 5. Create Google sheet, rename sheet_name and setup it using command `/build_sheet`
 
 <!-- USAGE -->
@@ -37,5 +38,6 @@ It automatically logs financial data and transactions into a Google Sheet and ge
 
 <!-- LICENSE -->
 ### License
+
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
