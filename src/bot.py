@@ -190,6 +190,7 @@ async def set_lang(update: Update, context: CallbackContext) -> None:
         await update.message.reply_text(helper.lang(trans, 'telegram.message.set_lang.fail'))
 
 def main():
+    print('Starting bot...')
     # build application
     application = Application.builder().token(TOKEN).post_init(post_init).build()
 
@@ -217,6 +218,8 @@ def main():
     # load translations
     global trans
     trans = helper.load_translations(helper.config('general.lang'))
+
+    print('Bot started')
 
     # run bot
     application.run_polling()

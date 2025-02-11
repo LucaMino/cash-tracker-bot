@@ -1,0 +1,4 @@
+# flyctl launch added from .gitignore
+**/.env.prod
+**/google-key.json
+fly.toml
