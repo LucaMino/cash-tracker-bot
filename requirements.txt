@@ -52,3 +52,4 @@ pymysql==1.1.1
 cryptography==43.0.0
 pandas==2.2.2
 xlsxwriter==3.2.0
+supabase
