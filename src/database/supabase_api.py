@@ -1,8 +1,9 @@
 import os
 from dotenv import load_dotenv
 from supabase import create_client, Client
+from database.database_interface import DatabaseInterface
 
-class DatabaseAPI:
+class SupabaseAPI(DatabaseInterface):
     def __init__(self):
         """
         Initializes the database API using configuration from the .env file.
@@ -15,8 +16,12 @@ class DatabaseAPI:
         if not self.supabase_url or not self.supabase_key:
             raise RuntimeError("SUPABASE_URL and SUPABASE_KEY must be set in the .env file.")
 
-        self.client: Client = create_client(self.supabase_url, self.supabase_key)
-
+        try:
+            self.client: Client = create_client(self.supabase_url, self.supabase_key)
+            print('Connected to Supabase successfully')
+            # return self.client
+        except Exception as e:
+            print(f"Failed to connect to Supabase: {e}")
 
     def insert(self, table_name: str, data: dict):
         """
@@ -34,19 +39,3 @@ class DatabaseAPI:
             return response
         except Exception as e:
             raise RuntimeError(f"Failed to insert data into {table_name}: {e}")
-
-    def fetch_all(self, table_name: str):
-        """
-        Fetch all records from the specified table.
-
-        Args:
-            table_name (str): The name of the table to fetch data from.
-
-        Returns:
-            dict: The response from the database.
-        """
-        try:
-            response = self.client.table(table_name).select("*").execute()
-            return response
-        except Exception as e:
-            raise RuntimeError(f"Failed to fetch data from {table_name}: {e}")

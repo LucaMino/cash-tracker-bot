@@ -1,7 +1,7 @@
 import os
 import helper
-from services.GoogleSheetService import GoogleSheetService
-from services.OpenAIService import OpenAIService
+from services.google_sheet_service import GoogleSheetService
+from services.open_ai_service import OpenAIService
 from datetime import datetime
 from dotenv import load_dotenv
 from telegram import Update, BotCommand
@@ -57,10 +57,10 @@ async def handle_message(update: Update, context: CallbackContext) -> None:
         return
     # retrieve message
     message = update.message.text
-    # use global vars
-    await update.message.reply_text(helper.lang(trans, 'telegram.message.waiting_openai'))
     # create openai service
     openai = OpenAIService()
+    # set waiting message
+    await update.message.reply_text(helper.lang(trans, 'telegram.message.waiting_openai'))
     # retrieve method
     method_name = openai.get_method(message)
     method = getattr(openai, method_name)

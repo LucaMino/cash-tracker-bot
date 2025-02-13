@@ -3,9 +3,11 @@ import os
 import json
 import io
 import pandas as pd
-from services.DatabaseAPI import DatabaseAPI
+import pymysql
+import pymysql.cursors
 import xlsxwriter
 from datetime import datetime
+from database.supabase_api import SupabaseAPI
 
 def sanitize_response(decoded_content):
     extracted_array = None
@@ -24,7 +26,7 @@ def sanitize_response(decoded_content):
     return [obj for obj in extracted_array if required_fields.issubset(obj.keys())]
 
 # get file path
-def get_file_path(name = 'settings.json'):
+def get_file_path(name: str = 'settings.json'):
     # absolute path
     current_dir = os.path.dirname(__file__)
     # build settings.json path
@@ -41,7 +43,7 @@ def load_settings():
     return settings
 
 # retrieve config param from key (settings.json)
-def config(key):
+def config(key: str):
     if '.' in key:
         # return array of splitted keys
         elements = key.split('.')
@@ -62,7 +64,18 @@ def format_db_date(input_date):
 
 # connect db
 def connect_db():
-    return DatabaseAPI()
+    if config('general.db.service') == 'supabase':
+        return SupabaseAPI()
+    else:
+        conn = pymysql.connect(
+            host=os.getenv('DB_HOST'),
+            user=os.getenv('DB_USER'),
+            password=os.getenv('DB_PASSWORD'),
+            db=os.getenv('DB_NAME'),
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor
+        )
+        return conn
 
 # insert db row
 def insert_db(conn, table_name, values):
