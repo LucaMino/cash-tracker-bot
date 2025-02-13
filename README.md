@@ -39,5 +39,4 @@ It automatically logs financial data and transactions into a Google Sheet and ge
 <!-- LICENSE -->
 ### License
 
-
 Distributed under the MIT License. See `LICENSE.txt` for more information.

@@ -101,7 +101,8 @@
     "general": {
         "lang": "it",
         "db": {
-            "status": false
+            "service": "supabase",
+            "status": true
         }
     }
 }

@@ -2,7 +2,7 @@ import json
 import helper
 from datetime import datetime
 from openai import OpenAI, OpenAIError
-from services.GoogleSheetService import GoogleSheetService
+from services.google_sheet_service import GoogleSheetService
 
 class OpenAIService:
 

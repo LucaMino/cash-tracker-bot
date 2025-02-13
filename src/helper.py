@@ -3,10 +3,11 @@ import os
 import json
 import io
 import pandas as pd
-import xlsxwriter
-from datetime import datetime
 import pymysql
 import pymysql.cursors
+import xlsxwriter
+from datetime import datetime
+from database.supabase_api import SupabaseAPI
 
 def sanitize_response(decoded_content):
     extracted_array = None
@@ -25,7 +26,7 @@ def sanitize_response(decoded_content):
     return [obj for obj in extracted_array if required_fields.issubset(obj.keys())]
 
 # get file path
-def get_file_path(name = 'settings.json'):
+def get_file_path(name: str = 'settings.json'):
     # absolute path
     current_dir = os.path.dirname(__file__)
     # build settings.json path
@@ -42,7 +43,7 @@ def load_settings():
     return settings
 
 # retrieve config param from key (settings.json)
-def config(key):
+def config(key: str):
     if '.' in key:
         # return array of splitted keys
         elements = key.split('.')
@@ -63,55 +64,58 @@ def format_db_date(input_date):
 
 # connect db
 def connect_db():
-    conn = pymysql.connect(
-        host=os.getenv('DB_HOST'),
-        user=os.getenv('DB_USER'),
-        password=os.getenv('DB_PASSWORD'),
-        db=os.getenv('DB_NAME'),
-        charset='utf8mb4',
-        cursorclass=pymysql.cursors.DictCursor
-    )
-    return conn
+    if config('general.db.service') == 'supabase':
+        return SupabaseAPI()
+    else:
+        conn = pymysql.connect(
+            host=os.getenv('DB_HOST'),
+            user=os.getenv('DB_USER'),
+            password=os.getenv('DB_PASSWORD'),
+            db=os.getenv('DB_NAME'),
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor
+        )
+        return conn
 
 # insert db row
-def insert_db(conn, sql, values):
+def insert_db(conn, table_name, values):
+    # Insert data
     try:
-        with conn.cursor() as cursor:
-            cursor.execute(sql, (values))
-        conn.commit()
-    except Exception as e:
-        print(f"Error: {e}")
+        insert_response = conn.insert(table_name, values)
+        print("Insert Response:", insert_response)
+    except RuntimeError as e:
+        print(e)
 
 # save transaction
 def save_transaction(conn, transaction, chat_id):
-    # create sql script
-    sql = "INSERT INTO transactions (category, amount, payment_method, note, paid_at, openai_response_chat_id) VALUES (%s, %s, %s, %s, %s, %s)"
+    # table
+    table_name = "transactions"
     # set values
-    values = [
-        transaction['category'].lower(),
-        transaction['amount'],
-        transaction['payment_method'].lower(),
-        transaction['note'].lower(),
-        format_db_date(transaction['date']),
-        chat_id
-    ] #
+    values = {
+        "category": transaction['category'].lower(),
+        "amount": transaction['amount'],
+        "payment_method": transaction['payment_method'].lower(),
+        "note": transaction['note'].lower(),
+        "paid_at": format_db_date(transaction['date']),
+        "openai_response_chat_id": chat_id
+     } #
     # save
-    insert_db(conn, sql, values)
+    insert_db(conn, table_name, values)
 
 # save openai response
 def save_openai_response(conn, response):
-    # create sql script
-    sql = "INSERT INTO openai_responses (chat_id, response, completion_tokens, prompt_tokens, total_tokens) VALUES (%s, %s, %s, %s, %s)"
+    # table
+    table_name = "openai_responses"
     # set values
-    values = [
-        response.id,
-        response.choices[0].message.content,
-        response.usage.completion_tokens,
-        response.usage.prompt_tokens,
-        response.usage.total_tokens
-    ]
+    values = {
+        "chat_id": response.id,
+        "response": response.choices[0].message.content,
+        "completion_tokens": response.usage.completion_tokens,
+        "prompt_tokens": response.usage.prompt_tokens,
+        "total_tokens": response.usage.total_tokens
+    }
     # save
-    insert_db(conn, sql, values)
+    insert_db(conn, table_name, values)
 
     return response.id
 
