@@ -1,4 +1,5 @@
 import os
+import json
 import helper
 from services.google_sheet_service import GoogleSheetService
 from services.open_ai_service import OpenAIService
@@ -59,8 +60,7 @@ async def handle_message(update: Update, context: CallbackContext) -> None:
     message = update.message.text
     # create openai service
     openai = OpenAIService()
-    # set waiting message
-    await update.message.reply_text(helper.lang(trans, 'telegram.message.waiting_openai'))
+    await update.message.reply_text(helper.lang(trans, 'telegram.message.success_openai'))
     # retrieve method
     method_name = openai.get_method(message)
     method = getattr(openai, method_name)
@@ -79,8 +79,6 @@ async def handle_message(update: Update, context: CallbackContext) -> None:
         if openai_response is None:
             await update.message.reply_text(helper.lang(trans, 'telegram.message.error_openai'))
         else:
-            await update.message.reply_text(helper.lang(trans, 'telegram.message.waiting'))
-
             try:
                 # retrieve clean transactions structure
                 transactions = helper.sanitize_response(content)
@@ -93,6 +91,19 @@ async def handle_message(update: Update, context: CallbackContext) -> None:
 
                     # loop transactions
                     for transaction in transactions:
+                        print(transaction)
+
+                        order_message = ''
+
+
+                        for b in transaction:
+                            print(b)
+                            print(transaction[b])
+
+
+
+                        await update.message.reply_text(message, parse_mode='HTML')
+
                         await update.message.reply_text(transaction)
 
                         # save on db

@@ -4,6 +4,7 @@
             "start": {
                 "index": "Hi! Tell me the expenses for today or any other day, and I'll track everything for you! Additionally, I can provide you with customized exports of the recorded transactions"
             },
+            "success_openai": "Connesso ad OpenAI con successo",
             "waiting_openai": "Waiting for OpenAI...",
             "error_openai": "Oops! I can't quite understand! Try starting with [Today I spent...]",
             "waiting": "Saving...",

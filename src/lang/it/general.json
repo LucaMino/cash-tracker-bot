@@ -4,6 +4,7 @@
             "start": {
                 "index": "Ciao! Dimmi le spese di oggi o di qualunque giorno e traccierò tutto! Inoltre posso fornirti export personalizzati sulle transazioni segnate"
             },
+            "success_openai": "Connesso ad OpenAI con successo",
             "waiting_openai": "In attesa di OpenAI...",
             "error_openai": "Ops! Non riesco a capire bene! Prova a partire con [Oggi ho speso...]",
             "waiting": "Sto salvando...",
