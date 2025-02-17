@@ -81,6 +81,12 @@ def connect_db():
 def insert_db(conn, table_name, values):
     # Insert data
     try:
+        # a = conn.fetch_all(table_name, ["id"])
+
+        # print(a)
+
+
+
         insert_response = conn.insert(table_name, values)
         print("Insert Response:", insert_response)
     except RuntimeError as e:
@@ -98,7 +104,7 @@ def save_transaction(conn, transaction, chat_id):
         "note": transaction['note'].lower(),
         "paid_at": format_db_date(transaction['date']),
         "openai_response_chat_id": chat_id
-     } #
+    }
     # save
     insert_db(conn, table_name, values)
 

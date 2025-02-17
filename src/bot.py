@@ -93,18 +93,15 @@ async def handle_message(update: Update, context: CallbackContext) -> None:
                     for transaction in transactions:
                         print(transaction)
 
-                        order_message = ''
+                        order_message = f"<b>{helper.lang(trans, 'telegram.message.fields.header')}</b>\n\n"
 
+                        for key, value in transaction.items():
+                            if key == 'amount':
+                                value = f"{value:,.2f} €"
+                            row = f"<b>{helper.lang(trans, f'telegram.message.fields.{key}')}</b>: {value}\n"
+                            order_message += row
 
-                        for b in transaction:
-                            print(b)
-                            print(transaction[b])
-
-
-
-                        await update.message.reply_text(message, parse_mode='HTML')
-
-                        await update.message.reply_text(transaction)
+                        await update.message.reply_text(order_message, parse_mode='HTML')
 
                         # save on db
                         if helper.config('general.db.status'):
@@ -124,7 +121,7 @@ async def post_init(application: Application) -> None:
     command = [
         BotCommand('start','To start bot'),
         BotCommand('get_balance','To retrieve balance of bank accounts'),
-        BotCommand('build_sheet','Build sheet structure'),
+        # BotCommand('build_sheet','Build sheet structure'),
         BotCommand('export','Export sheet in csv'),
         BotCommand('set_lang','Set default lang [it, en]'),
         BotCommand('help','To get hints'),
@@ -188,15 +185,20 @@ async def export(update: Update, context: CallbackContext) -> None:
 # export transactions (.csv)
 async def set_lang(update: Update, context: CallbackContext) -> None:
     if context.args:
+        # load translations var global
+        global trans
         # retrieve lang param
         lang = context.args[0].lower()
-        # set lang on config
-        helper.set_lang(lang)
-        # load translations
-        global trans
-        trans = helper.load_translations(helper.config('general.lang'))
+        # check if lang is available
+        if lang not in helper.config('general.available_langs'):
+            await update.message.reply_text(helper.lang(trans, 'telegram.message.set_lang.not_available'))
+        else:
+            # set lang on config
+            helper.set_lang(lang)
+            # load translations
+            trans = helper.load_translations(helper.config('general.lang'))
 
-        await update.message.reply_text(helper.lang(trans, 'telegram.message.set_lang.success'))
+            await update.message.reply_text(helper.lang(trans, 'telegram.message.set_lang.success'))
     else:
         await update.message.reply_text(helper.lang(trans, 'telegram.message.set_lang.fail'))
 
