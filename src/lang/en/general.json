@@ -4,13 +4,21 @@
             "start": {
                 "index": "Hi! Tell me the expenses for today or any other day, and I'll track everything for you! Additionally, I can provide you with customized exports of the recorded transactions"
             },
-            "success_openai": "Connesso ad OpenAI con successo",
+            "success_openai": "Successfully connected to OpenAI",
             "waiting_openai": "Waiting for OpenAI...",
             "error_openai": "Oops! I can't quite understand! Try starting with [Today I spent...]",
             "waiting": "Saving...",
             "success": "Saved successfully",
             "exception": "Oops! I can't perform this action!",
             "forbidden": "You are not authorized to perform this action!",
+            "fields": {
+                "header": "Transaction detail",
+                "date": "Date",
+                "payment_method": "Payment method",
+                "category": "Category",
+                "amount": "Amount",
+                "note": "Note"
+            },
             "export": {
                 "fail": "No data found"
             },
@@ -20,7 +28,8 @@
             },
             "set_lang": {
                 "success": "Language set successfully",
-                "fail": "Error during language change. Use /set_lang {language}"
+                "fail": "Error during language change. Use /set_lang {language}",
+                "not_available": "Language not available"
             }
         }
     }

@@ -11,6 +11,14 @@
             "success": "Salvato con successo",
             "exception": "Ops! Non riesco a compiere questa azione!",
             "forbidden": "Non sei autorizzato a compiere questa azione!",
+            "fields": {
+                "header": "Dettaglio transazione",
+                "date": "Data",
+                "payment_method": "Metodo di pagamento",
+                "category": "Categoria",
+                "amount": "Totale",
+                "note": "Note"
+            },
             "export": {
                 "fail": "No data found"
             },
@@ -20,7 +28,8 @@
             },
             "set_lang": {
                 "success" : "Lingua impostata con successo",
-                "fail" : "Errore durante il cambio lingua. Usa /set_lang {lingua}"
+                "fail" : "Errore durante il cambio lingua. Usa /set_lang {lingua}",
+                "not_available" : "Lingua non disponibile"
             }
         }
     }
