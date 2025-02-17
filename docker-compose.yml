@@ -4,7 +4,7 @@ services:
   script:
     build: .
     env_file:
-      - .env
+      - src/.env
     # depends_on:
       # - mysql
 
