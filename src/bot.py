@@ -211,7 +211,7 @@ def main():
     application.add_handler(CommandHandler('start', start))
 
     # set build_sheet() -> /build_sheet
-    application.add_handler(CommandHandler('build_sheet', build_sheet))
+    # application.add_handler(CommandHandler('build_sheet', build_sheet))
 
     # set get_balance() -> /get_balance
     application.add_handler(CommandHandler('get_balance', get_balance))

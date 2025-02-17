@@ -32,14 +32,15 @@ It automatically logs financial data and transactions into a Google Sheet and ge
 <!-- USAGE -->
 ### Usage
 - Possibility to set lang using `/set_lang it` or `/set_lang en` (Change default on [settings.json](src/config/settings.json))
-- Possibility to customize OpenAi prompt on [OpenAIService.py](src/services/OpenAIService.py)
+- Possibility to customize OpenAi prompt on [OpenAIService.py](src/services/open_ai_service.py)
 - Possibility to enable database storage on [settings.json](src/config/settings.json)
-
 
 <!-- UTILS -->
 ```sh
 docker-compose run script pip list
 docker-compose run script pip freeze > requirements.txt
+# pip list using venv
+docker-compose run script /app/venv/bin/pip list
 ```
 
 <!-- LICENSE -->
