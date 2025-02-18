@@ -1,13 +1,30 @@
 SET time_zone = 'Europe/Rome';
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `openai_responses`
+--
+
 CREATE TABLE openai_responses (
     chat_id VARCHAR(255) PRIMARY KEY,
+    prompt TEXT NOT NULL,
     response JSON NOT NULL,
     completion_tokens INT NOT NULL,
     prompt_tokens INT NOT NULL,
     total_tokens INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+--
+-- Table structure for table `payment_methods`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `transactions`
+--
 
 CREATE TABLE transactions (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -23,3 +40,9 @@ CREATE TABLE transactions (
     CONSTRAINT fk_openai_response_chat_id
     FOREIGN KEY (openai_response_chat_id) REFERENCES openai_responses(chat_id)
 );
+
+-- --------------------------------------------------------
+
+--
+-- Constraints for dumped tables
+--

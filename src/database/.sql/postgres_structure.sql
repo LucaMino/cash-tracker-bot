@@ -2,6 +2,7 @@ SET TIME ZONE 'Europe/Rome';
 
 CREATE TABLE openai_responses (
     chat_id TEXT PRIMARY KEY,
+    prompt TEXT NOT NULL,
     response JSONB NOT NULL,
     completion_tokens INT NOT NULL,
     prompt_tokens INT NOT NULL,

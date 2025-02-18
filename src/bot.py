@@ -74,7 +74,7 @@ async def handle_message(update: Update, context: CallbackContext) -> None:
     else:
         # save response on db
         if helper.config('general.db.status'):
-            chat_id = helper.save_openai_response(CONN, openai_response)
+            chat_id = helper.save_openai_response(CONN, openai_response, message)
 
         if openai_response is None:
             await update.message.reply_text(helper.lang(trans, 'telegram.message.error_openai'))

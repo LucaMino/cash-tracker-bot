@@ -78,7 +78,7 @@ def connect_db():
         return conn
 
 # insert db row
-def insert_db(conn, table_name, values):
+def insert_db(conn, table_name: str, values):
     # Insert data
     try:
         # a = conn.fetch_all(table_name, ["id"])
@@ -109,12 +109,13 @@ def save_transaction(conn, transaction, chat_id):
     insert_db(conn, table_name, values)
 
 # save openai response
-def save_openai_response(conn, response):
+def save_openai_response(conn, response, message: str):
     # table
     table_name = "openai_responses"
     # set values
     values = {
         "chat_id": response.id,
+        "prompt": message,
         "response": response.choices[0].message.content,
         "completion_tokens": response.usage.completion_tokens,
         "prompt_tokens": response.usage.prompt_tokens,
