@@ -6,10 +6,13 @@ import pandas as pd
 import pymysql
 import pymysql.cursors
 import xlsxwriter
+from openai.types.chat import ChatCompletion
+from typing import Any, Union
 from datetime import datetime
 from database.supabase_api import SupabaseAPI
 
-def sanitize_response(decoded_content):
+# return cleaned response
+def sanitize_response(decoded_content: dict) -> list:
     extracted_array = None
     # remove key "transactions" and return only list
     if isinstance(decoded_content, dict):
@@ -26,14 +29,14 @@ def sanitize_response(decoded_content):
     return [obj for obj in extracted_array if required_fields.issubset(obj.keys())]
 
 # get file path
-def get_file_path(name: str = 'settings.json'):
+def get_file_path(name: str = 'settings.json') -> str:
     # absolute path
     current_dir = os.path.dirname(__file__)
     # build settings.json path
     return os.path.join(current_dir, 'config', name)
 
 # load settings.json file
-def load_settings():
+def load_settings() -> dict:
     # build settings.json path
     settings_path = get_file_path()
     # load file
@@ -43,7 +46,7 @@ def load_settings():
     return settings
 
 # retrieve config param from key (settings.json)
-def config(key: str):
+def config(key: str) -> Any:
     if '.' in key:
         # return array of splitted keys
         elements = key.split('.')
@@ -58,12 +61,8 @@ def config(key: str):
 
     return None
 
-# convert dd/mm/yyyy to yyyy-mm-dd
-def format_db_date(input_date):
-    return datetime.strptime(input_date, '%d/%m/%Y').strftime('%Y-%m-%d')
-
 # connect db
-def connect_db():
+def connect_db() -> Union[SupabaseAPI, pymysql.connections.Connection]:
     if config('general.db.service') == 'supabase':
         return SupabaseAPI()
     else:
@@ -78,22 +77,16 @@ def connect_db():
         return conn
 
 # insert db row
-def insert_db(conn, table_name: str, values):
+def insert_db(conn: Union[SupabaseAPI, pymysql.connections.Connection], table_name: str, values: dict) -> None:
     # Insert data
     try:
-        # a = conn.fetch_all(table_name, ["id"])
-
-        # print(a)
-
-
-
         insert_response = conn.insert(table_name, values)
         print("Insert Response:", insert_response)
     except RuntimeError as e:
         print(e)
 
 # save transaction
-def save_transaction(conn, transaction, chat_id):
+def save_transaction(conn: Union[SupabaseAPI, pymysql.connections.Connection], transaction: list, chat_id: int) -> None:
     # table
     table_name = "transactions"
     # set values
@@ -109,7 +102,7 @@ def save_transaction(conn, transaction, chat_id):
     insert_db(conn, table_name, values)
 
 # save openai response
-def save_openai_response(conn, response, message: str):
+def save_openai_response(conn: Union[SupabaseAPI, pymysql.connections.Connection], response: ChatCompletion, message: str) -> int:
     # table
     table_name = "openai_responses"
     # set values
@@ -127,7 +120,7 @@ def save_openai_response(conn, response, message: str):
     return response.id
 
 # load translations
-def load_translations(language_code):
+def load_translations(language_code: str) -> dict:
     file_path = f"src/lang/{language_code}/general.json"
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"Translation file not found for language: {language_code}")
@@ -135,7 +128,8 @@ def load_translations(language_code):
     with open(file_path, 'r', encoding='utf-8') as file:
         return json.load(file)
 
-def lang(translations, key_path):
+# get the translation string
+def lang(translations: dict, key_path: str) -> str:
     keys = key_path.split('.')
     message = translations
     for key in keys:
@@ -144,7 +138,8 @@ def lang(translations, key_path):
             return None
     return message
 
-def set_lang(lang):
+# set lang on settings.json
+def set_lang(lang: str) -> None:
     # build settings.json path
     settings_path = get_file_path()
     # retrieve file content
@@ -155,11 +150,12 @@ def set_lang(lang):
     with open(settings_path, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
-def user_access(user_id, telegram_user_id):
+# check if the user has permission
+def user_access(user_id: int, telegram_user_id: int) -> bool:
     return user_id == int(telegram_user_id)
 
 # create file stream
-def create_file_stream(data_string):
+def create_file_stream(data_string: str) -> io.BytesIO:
     data_io = io.StringIO(data_string)
 
     df = pd.read_csv(data_io, delimiter=';', skipinitialspace=True)
@@ -173,5 +169,10 @@ def create_file_stream(data_string):
 
     return output
 
-def format_date(date):
+# remove any non-numeric characters except for '/'
+def format_date(date: str) -> str:
     return re.sub(r'[^0-9/]', '', date)
+
+# convert dd/mm/yyyy to yyyy-mm-dd
+def format_db_date(input_date: str) -> str:
+    return datetime.strptime(input_date, '%d/%m/%Y').strftime('%Y-%m-%d')

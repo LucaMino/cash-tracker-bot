@@ -41,6 +41,8 @@ docker-compose run script pip list
 docker-compose run script pip freeze > requirements.txt
 # pip list using venv
 docker-compose run script /app/venv/bin/pip list
+# check file using mypy
+docker-compose run script /app/venv/bin/mypy /app/src/bot.py
 ```
 
 <!-- LICENSE -->

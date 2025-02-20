@@ -35,27 +35,7 @@ class SupabaseAPI(DatabaseInterface):
         """
         try:
             response = self.client.table(table_name).insert(data).execute()
+            print(type(response))
             return response
         except Exception as e:
             raise RuntimeError(f"Failed to insert data into {table_name}: {e}")
-
-    def fetch_all(self, table_name: str, fields: list = []):
-        """
-        Retrieve all records from the specified table.
-
-        Args:
-            table_name (str): The name of the table to fetch data from.
-            fields (list, optional): A list specifying fields to filter by. Defaults to an empty list.
-
-        Returns:
-            dict: The response from the database containing the retrieved records.
-        """
-        try:
-            if not fields:
-                fields = "*"
-            else:
-                fields = ",".join(fields)
-            response = self.client.table(table_name).select(fields).execute()
-            return response
-        except Exception as e:
-            raise RuntimeError(f"Failed to fetch data from {table_name}: {e}")

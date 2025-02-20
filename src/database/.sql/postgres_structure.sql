@@ -1,5 +1,11 @@
 SET TIME ZONE 'Europe/Rome';
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `openai_responses`
+--
+
 CREATE TABLE openai_responses (
     chat_id TEXT PRIMARY KEY,
     prompt TEXT NOT NULL,
@@ -9,6 +15,12 @@ CREATE TABLE openai_responses (
     total_tokens INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `transactions`
+--
 
 CREATE TABLE transactions (
     id SERIAL PRIMARY KEY,
@@ -22,5 +34,11 @@ CREATE TABLE transactions (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_openai_response_chat_id FOREIGN KEY (openai_response_chat_id) REFERENCES openai_responses(chat_id) ON DELETE SET NULL
 );
+
+-- --------------------------------------------------------
+
+--
+-- Constraints for dumped tables
+--
 
 CREATE INDEX idx_openai_response_chat_id ON transactions (openai_response_chat_id);

@@ -1,3 +1,4 @@
 .env
 .env.prod
+pyrightconfig.json
 google-key.json

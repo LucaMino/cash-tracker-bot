@@ -1,5 +1,4 @@
 import os
-import json
 import helper
 from services.google_sheet_service import GoogleSheetService
 from services.open_ai_service import OpenAIService
@@ -15,8 +14,9 @@ load_dotenv()
 if helper.config('general.db.status'):
     CONN = helper.connect_db()
 
-# retrieve telegram bot token
+# retrieve and set env vars
 TOKEN = os.getenv('TELEGRAM_TOKEN')
+TELEGRAM_USER_ID = os.getenv('TELEGRAM_USER_ID')
 
 # set consts
 EXPORT_METHOD = 'generate_export'
@@ -30,7 +30,7 @@ async def start(update: Update, context: CallbackContext) -> None:
 # get balance from all bank accounts
 async def get_balance(update: Update, context: CallbackContext) -> None:
     # check permission
-    if not helper.user_access(update.message.from_user.id, os.getenv('TELEGRAM_USER_ID')):
+    if not TELEGRAM_USER_ID or not helper.user_access(update.message.from_user.id, int(TELEGRAM_USER_ID)):
         await update.message.reply_text(helper.lang(trans, 'telegram.message.forbidden'))
         return
     # retrieve and print balance
@@ -53,11 +53,13 @@ async def help(update: Update, context: CallbackContext) -> None:
 # handle message function
 async def handle_message(update: Update, context: CallbackContext) -> None:
     # check permission
-    if not helper.user_access(update.message.from_user.id, os.getenv('TELEGRAM_USER_ID')):
+    if not TELEGRAM_USER_ID or not helper.user_access(update.message.from_user.id, int(TELEGRAM_USER_ID)):
         await update.message.reply_text(helper.lang(trans, 'telegram.message.forbidden'))
         return
     # retrieve message
     message = update.message.text
+    # abort if invalid message
+    if not isinstance(message, str): return
     # create openai service
     openai = OpenAIService()
     await update.message.reply_text(helper.lang(trans, 'telegram.message.success_openai'))
@@ -91,8 +93,6 @@ async def handle_message(update: Update, context: CallbackContext) -> None:
 
                     # loop transactions
                     for transaction in transactions:
-                        print(transaction)
-
                         order_message = f"<b>{helper.lang(trans, 'telegram.message.fields.header')}</b>\n\n"
 
                         for key, value in transaction.items():
@@ -184,9 +184,9 @@ async def export(update: Update, context: CallbackContext) -> None:
 
 # export transactions (.csv)
 async def set_lang(update: Update, context: CallbackContext) -> None:
+    # load translations var global
+    global trans
     if context.args:
-        # load translations var global
-        global trans
         # retrieve lang param
         lang = context.args[0].lower()
         # check if lang is available
@@ -202,6 +202,7 @@ async def set_lang(update: Update, context: CallbackContext) -> None:
     else:
         await update.message.reply_text(helper.lang(trans, 'telegram.message.set_lang.fail'))
 
+# main
 def main():
     print('Starting bot...')
     # build application

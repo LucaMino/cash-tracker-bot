@@ -16,10 +16,6 @@ CREATE TABLE openai_responses (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
---
--- Table structure for table `payment_methods`
---
-
 -- --------------------------------------------------------
 
 --
