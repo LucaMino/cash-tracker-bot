@@ -11,7 +11,7 @@ RUN virtualenv venv
 
 # activate the virtual environment and install dependencies from requirements.txt
 COPY requirements.txt /app/
-# COPY pyrightconfig.json /app/
+COPY pyrightconfig.json /app/
 RUN . venv/bin/activate && pip install --no-cache-dir -r requirements.txt
 
 COPY src/ /app/src/
