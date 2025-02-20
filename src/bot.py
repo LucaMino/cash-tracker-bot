@@ -1,5 +1,7 @@
 import os
 import helper
+import pymysql
+from database.supabase_api import SupabaseAPI
 from services.google_sheet_service import GoogleSheetService
 from services.open_ai_service import OpenAIService
 from datetime import datetime
@@ -10,13 +12,14 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 # load .env
 load_dotenv()
 
-# save conn
-if helper.config('general.db.status'):
-    CONN = helper.connect_db()
-
 # retrieve and set env vars
 TOKEN = os.getenv('TELEGRAM_TOKEN')
 TELEGRAM_USER_ID = os.getenv('TELEGRAM_USER_ID')
+CONN = None
+
+# save conn
+if helper.config('general.db.status'):
+    CONN = helper.connect_db()
 
 # set consts
 EXPORT_METHOD = 'generate_export'
@@ -126,6 +129,10 @@ async def post_init(application: Application) -> None:
         BotCommand('set_lang','Set default lang [it, en]'),
         BotCommand('help','To get hints'),
     ]
+
+    if isinstance(CONN, (SupabaseAPI, pymysql.connections.Connection)):
+        command.append(BotCommand('sync','To sync google sheet with database'))
+
     await application.bot.set_my_commands(command)
 
 # return balance from gsheet
@@ -202,6 +209,10 @@ async def set_lang(update: Update, context: CallbackContext) -> None:
     else:
         await update.message.reply_text(helper.lang(trans, 'telegram.message.set_lang.fail'))
 
+# sync google sheet items with database
+async def sync(update: Update, context: CallbackContext) -> None:
+    print("TODO sync")
+
 # main
 def main():
     print('Starting bot...')
@@ -222,6 +233,10 @@ def main():
 
     # set export() -> /export
     application.add_handler(CommandHandler('export', export))
+
+    # set sync() -> /sync
+    if isinstance(CONN, (SupabaseAPI, pymysql.connections.Connection)):
+        application.add_handler(CommandHandler('sync', sync))
 
     # set settings/set_lang() -> /set_lang
     application.add_handler(CommandHandler('set_lang', set_lang))
