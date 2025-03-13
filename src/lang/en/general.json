@@ -26,6 +26,10 @@
                 "success": "Sheet created successfully",
                 "fail": "Error creating the sheet. Check the SPREADSHEET_ID in env or the sheet_name in settings"
             },
+            "sync": {
+                "success" : "Synchronization completed successfully",
+                "fail" : "Error during synchronization"
+            },
             "set_lang": {
                 "success": "Language set successfully",
                 "fail": "Error during language change. Use /set_lang {language}",

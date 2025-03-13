@@ -211,8 +211,25 @@ async def set_lang(update: Update, context: CallbackContext) -> None:
 
 # sync google sheet items with database
 async def sync(update: Update, context: CallbackContext) -> None:
-    print("TODO sync")
-
+    # retrieve categories
+    g_sheet_service = GoogleSheetService('get_categories')
+    categories = g_sheet_service.get_categories()
+    # retrieve payment methods
+    g_sheet_service = GoogleSheetService('get_payment_methods')
+    payment_methods = g_sheet_service.get_payment_methods()
+    # check if categories and payment methods are valid
+    if isinstance(categories, list) and isinstance(payment_methods, list):
+        # load settings
+        data = helper.load_settings()
+        # set categories
+        data['google_sheet']['categories'] = categories
+        # set payment methods
+        data['google_sheet']['payment_methods'] = payment_methods
+        # save settings
+        helper.write_settings(data)
+        await update.message.reply_text(helper.lang(trans, 'telegram.message.sync.success'))
+    else:
+        await update.message.reply_text(helper.lang(trans, 'telegram.message.sync.fail'))
 # main
 def main():
     print('Starting bot...')

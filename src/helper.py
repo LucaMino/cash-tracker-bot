@@ -45,6 +45,13 @@ def load_settings() -> dict:
     # return file content
     return settings
 
+def write_settings(data) -> None:
+    # build settings.json path
+    settings_path = get_file_path()
+    # load file
+    with open(settings_path, 'w') as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
 # retrieve config param from key (settings.json)
 def config(key: str) -> Any:
     if '.' in key:
