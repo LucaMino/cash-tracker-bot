@@ -131,7 +131,7 @@ async def post_init(application: Application) -> None:
     ]
 
     if isinstance(CONN, (SupabaseAPI, pymysql.connections.Connection)):
-        command.append(BotCommand('sync','To sync google sheet with database'))
+        command.append(BotCommand('sync','To sync google sheet with internal database'))
 
     await application.bot.set_my_commands(command)
 
