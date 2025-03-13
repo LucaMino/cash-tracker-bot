@@ -3,8 +3,12 @@ A Telegram bot for tracking and managing cash flow.
 It automatically logs financial data and transactions into a Google Sheet and generates custom exports using OpenAI APIs.
 
 ## Examples
-- Log Expenses: You can tell the bot things like "Today I spent 5,00 € at the bar and 2,00 € for the bus ticket," and it will record these transactions on Google Sheet for you.
+- **Log Expenses**  
+  Simply tell the bot about your expenses, e.g.:  
+  _"Today I spent 5.00 € at the bar and 2.00 € for the bus ticket."_  
+  The bot will automatically record these transactions in a Google Sheet.  
 - Generate Reports: You can request reports with commands like "Give me an export of all expenses for September by {category}" and the bot will generate the requested data.
+- Export Data: Use the `/export` command to export the full list of transactions via CSV.
 
 <!-- GETTING STARTED -->
 ## Getting Started
