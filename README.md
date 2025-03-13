@@ -44,6 +44,7 @@ It automatically logs financial data and transactions into a Google Sheet and ge
 - Possibility to enable database storage on [settings.json](src/config/settings.json), already set up for Supabase DB
 
 <!-- UTILS -->
+### Utils
 ```sh
 docker-compose run script pip list
 docker-compose run script pip freeze > requirements.txt
