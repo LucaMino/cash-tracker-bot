@@ -1,10 +1,10 @@
-# fly.toml app configuration file generated for cash-tracker-bot on 2025-02-17T11:32:05+01:00
+# fly.toml app configuration file generated for cash-tracker-bot on 2025-04-01T09:48:46+02:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
 app = 'cash-tracker-bot'
-primary_region = 'lhr'
+primary_region = 'fra'
 
 [build]
 
@@ -17,6 +17,5 @@ primary_region = 'lhr'
   processes = ['app']
 
 [[vm]]
-  memory = '1gb'
-  cpu_kind = 'shared'
-  cpus = 1
+  size = 'shared-cpu-1x'
+  memory = '1024MB'
