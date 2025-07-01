@@ -1,16 +1,25 @@
 import json
 import helper
-from typing import Any, Optional, Tuple
 from datetime import datetime
 from openai import OpenAI, OpenAIError
-from openai.types.chat import ChatCompletion
 from services.google_sheet_service import GoogleSheetService
 
 class OpenAIService:
     def __init__(self):
+        """
+        Initializes the OpenAI service
+        """
+        # create client
         self.client = OpenAI()
 
-    def get_method(self, message: str) -> str:
+    def get_method(self, message):
+        """
+        Retrieves the method to use based on the user's request
+        Args:
+            message (str): The user's request
+        Returns:
+            str: The method to use
+        """
         # set system prompt
         system_prompt = 'Determine whether to use "generate_trans" or "generate_export" based on the request. Return a word "action" (format json)'
         # retrieve gpt response
@@ -18,7 +27,14 @@ class OpenAIService:
         # validate response
         return content['action']
 
-    def generate_export(self, message: str):
+    def generate_export(self, message):
+        """
+        Generates a CSV export based on the user's request
+        Args:
+            message (str): The user's request
+        Returns:
+            Tuple[ChatCompletion, Optional[dict]]: The OpenAI response and the file stream if applicable
+        """
         # set system prompt
         g_sheet_service = GoogleSheetService('export')
         # retrieve csv file content
@@ -35,7 +51,14 @@ class OpenAIService:
 
         return response, file_stream
 
-    def generate_trans(self, message: str) -> Tuple[ChatCompletion, Optional[dict]]:
+    def generate_trans(self, message):
+        """
+        Generates a list of transactions based on the user's request
+        Args:
+            message (str): The user's request
+        Returns:
+            Tuple[ChatCompletion, dict]: The OpenAI response and the parsed content
+        """
         # set current date
         date = datetime.today().strftime('%d/%m/%Y')
         # retrieve payment_methods and categories from google sheets
@@ -59,7 +82,15 @@ class OpenAIService:
 
         return response, content
 
-    def get_response(self, message: str, system_prompt: str) -> Tuple[ChatCompletion, dict]:
+    def get_response(self, message, system_prompt):
+        """
+        Retrieves the response from the OpenAI API
+        Args:
+            message (str): The user's request
+            system_prompt (str): The system prompt to guide the response
+        Returns:
+            Tuple[ChatCompletion, dict]: The OpenAI response and the response content
+        """
         # define messages
         messages = [
             {
