@@ -1,3 +1,4 @@
 .env
 .env.prod
 google-key.json
+.vscode

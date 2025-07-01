@@ -7,7 +7,6 @@ from openai.types.chat import ChatCompletion
 from services.google_sheet_service import GoogleSheetService
 
 class OpenAIService:
-
     def __init__(self):
         self.client = OpenAI()
 
