@@ -6,7 +6,6 @@ import pandas as pd
 import pymysql
 import pymysql.cursors
 import xlsxwriter
-from openai.types.chat import ChatCompletion
 from typing import Any, Union
 from datetime import datetime
 from database.supabase_api import SupabaseAPI
@@ -84,7 +83,7 @@ def connect_db() -> Union[SupabaseAPI, pymysql.connections.Connection]:
         return conn
 
 # insert db row
-def insert_db(conn: Union[SupabaseAPI, pymysql.connections.Connection], table_name: str, values: dict) -> None:
+def insert_db(conn, table_name, values) -> None:
     # Insert data
     try:
         insert_response = conn.insert(table_name, values)
@@ -93,7 +92,7 @@ def insert_db(conn: Union[SupabaseAPI, pymysql.connections.Connection], table_na
         print(e)
 
 # save transaction
-def save_transaction(conn: Union[SupabaseAPI, pymysql.connections.Connection], transaction: list, chat_id: int) -> None:
+def save_transaction(conn, transaction, chat_id) -> None:
     # table
     table_name = "transactions"
     # set values
@@ -109,7 +108,7 @@ def save_transaction(conn: Union[SupabaseAPI, pymysql.connections.Connection], t
     insert_db(conn, table_name, values)
 
 # save openai response
-def save_openai_response(conn: Union[SupabaseAPI, pymysql.connections.Connection], response: ChatCompletion, message: str) -> int:
+def save_openai_response(conn, response, message) -> int:
     # table
     table_name = "openai_responses"
     # set values

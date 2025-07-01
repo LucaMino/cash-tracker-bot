@@ -119,4 +119,3 @@ class OpenAIService:
             print(f"Error: {e}")
             return None
             raise RuntimeError(f"OpenAI request failed: {e}")
-            return None, None
