@@ -3,18 +3,12 @@ FROM python:3.9-slim
 # set work dir
 WORKDIR /app
 
-# install virtualenv
-RUN pip install virtualenv
-
-# create a virtual environment
-RUN virtualenv venv
-
-# activate the virtual environment and install dependencies from requirements.txt
+# copy requirements file and install Python dependencies
 COPY requirements.txt /app/
-# COPY pyrightconfig.json /app/
-RUN . venv/bin/activate && pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
+# copy source code
 COPY src/ /app/src/
 
 # run bot.py
-CMD ["venv/bin/python", "src/bot.py"]
+CMD ["python", "src/bot.py"]

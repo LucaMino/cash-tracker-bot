@@ -3,15 +3,15 @@ A Telegram bot for tracking and managing cash flow.
 It automatically logs financial data and transactions into a Google Sheet and generates custom exports using OpenAI APIs.
 
 ## Examples
-- **Log Expenses**  
-  Simply tell the bot about your expenses, e.g.:  
-  _"Today I spent 5.00 € at the bar and 2.00 € for the bus ticket"_  
+- **Log Expenses**
+  Simply tell the bot about your expenses, e.g.:
+  _"Today I spent 5.00 € at the bar and 2.00 € for the bus ticket"_
   The bot will automatically convert the message into JSON and record these transactions in a Google Sheet.
-- **Generate Reports**  
-  Request reports by sending messages like:  
-  _"Give me an export of all expenses for September by {category}."_  
+- **Generate Reports**
+  Request reports by sending messages like:
+  _"Give me an export of all expenses for September by {category}."_
   The bot will generate a filtered CSV export based on your request.
-- **Export Data**  
+- **Export Data**
   Use the `/export` command to export the full list of transactions via CSV.
 
 <!-- GETTING STARTED -->
@@ -35,7 +35,7 @@ It automatically logs financial data and transactions into a Google Sheet and ge
 
 4. Update [settings.json](src/config/settings.json) (Change categories, payment methods...)
 
-5. Create Google sheet, rename sheet_name and setup it using command `/build_sheet` 
+5. Create Google sheet, rename sheet_name and setup it using command `/build_sheet`
 
 <!-- USAGE -->
 ### Usage
@@ -58,3 +58,10 @@ docker-compose run script /app/venv/bin/mypy /app/src/bot.py
 ### License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
+
+
+
+
+fly apps create cash-tracker-bot
+fly deploy
+st secrets

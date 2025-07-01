@@ -35,9 +35,9 @@
             "get_categories": {
                 "sheet_name": "utils",
                 "range": {
-                    "total": "A2:A24",
+                    "total": "A2:A25",
                     "from": "A2",
-                    "to": "A22"
+                    "to": "A25"
                 }
             },
             "build_sheet": {
