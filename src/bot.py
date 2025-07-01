@@ -5,12 +5,8 @@ from database.supabase_api import SupabaseAPI
 from services.google_sheet_service import GoogleSheetService
 from services.open_ai_service import OpenAIService
 from datetime import datetime
-from dotenv import load_dotenv
 from telegram import Update, BotCommand
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackContext
-
-# load .env
-load_dotenv()
 
 # retrieve and set env vars
 TOKEN = os.getenv('TELEGRAM_TOKEN')

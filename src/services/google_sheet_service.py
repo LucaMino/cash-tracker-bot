@@ -2,13 +2,10 @@ import os
 import io
 import csv
 import helper
+import json
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from dotenv import load_dotenv
-
-# load .env
-load_dotenv()
 
 class GoogleSheetService:
 
@@ -16,7 +13,14 @@ class GoogleSheetService:
         # set const
         self.FROM_API = 'FROM API'
         # create credentials
-        credentials = service_account.Credentials.from_service_account_file('src/google-key.json', scopes=['https://www.googleapis.com/auth/spreadsheets'])
+        scopes = ['https://www.googleapis.com/auth/spreadsheets']
+        # check if we are in development or production
+        if os.getenv('APP_ENV', 'DEV') == 'DEV':
+            # load credentials from file
+            credentials = service_account.Credentials.from_service_account_file('src/google-key.json', scopes=scopes)
+        else:
+            # load credentials from JSON env variable
+            credentials = service_account.Credentials.from_service_account_info(json.loads(os.getenv('GOOGLE_KEY_JSON')), scopes=scopes)
         # build service
         self.service = build('sheets', 'v4', credentials=credentials)
         # set range name

@@ -1,5 +1,4 @@
 import os
-from dotenv import load_dotenv
 from supabase import create_client, Client
 from database.database_interface import DatabaseInterface
 
@@ -8,10 +7,9 @@ class SupabaseAPI(DatabaseInterface):
         """
         Initializes the database API using configuration from the .env file.
         """
-        load_dotenv()
 
-        self.supabase_url = os.getenv("SUPABASE_URL")
-        self.supabase_key = os.getenv("SUPABASE_KEY")
+        self.supabase_url = os.getenv('SUPABASE_URL')
+        self.supabase_key = os.getenv('SUPABASE_KEY')
 
         if not self.supabase_url or not self.supabase_key:
             raise RuntimeError("SUPABASE_URL and SUPABASE_KEY must be set in the .env file.")
