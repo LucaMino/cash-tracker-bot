@@ -31,13 +31,13 @@ Log expenses like “Yesterday I spent 10.50 by card for the taxi” — the bot
 ### 🧪 Installation
 
 1. Clone the repository:
-   ```bash
+   ```sh
    git clone https://github.com/LucaMino/cash-tracker-bot.git
    ```
 2. Create `.env` from [.env.example](src/.env.example)
 3. Update [settings.json](src/config/settings.json) (Change categories, payment methods...)
 4. Build container:
-   ```bash
+   ```sh
    docker-compose up -d --build
    ```
 5. Create Google sheet, rename sheet_name and setup it using command `/build_sheet`
@@ -48,7 +48,7 @@ Log expenses like “Yesterday I spent 10.50 by card for the taxi” — the bot
 
 ```sh
 fly deploy
-fly ssh console --app kickoff-sync  // open an SSH console to your app
+fly ssh console --app cash-tracker-bot  // open an SSH console to your app
 docker-compose run script pip list
 docker-compose run script pip freeze > requirements.txt
 ```
